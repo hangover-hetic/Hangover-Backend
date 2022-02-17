@@ -11,8 +11,6 @@ services:
       - ./app:/var/www/symfony_docker
     depends_on:
       - database
-    networks:
-      - postgres
 
   nginx:
     container_name: nginx
@@ -57,8 +55,6 @@ services:
 
     ports:
       - '8081:80'
-    networks:
-      - postgres
 
 networks:
   postgres:
