@@ -11,8 +11,6 @@ services:
       - ./app:/var/www/symfony_docker
     depends_on:
       - database
-    networks:
-      - postgres
 
   nginx:
     container_name: nginx
@@ -39,8 +37,6 @@ services:
       # "3306" to "3306:3306". Where the first port is exposed to the host and the second is the container port.
       # See https://docs.docker.com/compose/compose-file/#ports for more information.
       - '5432:5432'
-    networks:
-      - postgres
     volumes:
       - db-data:/var/lib/postgresql/data:rw
 
@@ -57,8 +53,6 @@ services:
 
     ports:
       - '8081:80'
-    networks:
-      - postgres
 
 networks:
   postgres:
