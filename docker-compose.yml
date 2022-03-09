@@ -61,6 +61,8 @@ networks:
 volumes:
   db-data:
   pgadmin:
+  app:
+  default.conf:
 
 
 
