@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -39,6 +41,31 @@ implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $country;
+
+    #[ORM\OneToMany(mappedBy: 'relatedUser', targetEntity: Organisator::class)]
+    private $organisators;
+
+    #[ORM\ManyToOne(targetEntity: Role::class, inversedBy: 'users')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $role;
+
+    #[ORM\ManyToMany(targetEntity: self::class)]
+    private $friends;
+
+    #[ORM\OneToMany(mappedBy: 'relatedUser', targetEntity: BoughtPackage::class, orphanRemoval: true)]
+    private $boughtPackages;
+
+    #[ORM\OneToMany(mappedBy: 'relatedUser', targetEntity: UserFestival::class, orphanRemoval: true)]
+    private $usersFestival;
+
+
+    public function __construct()
+    {
+        $this->organisators = new ArrayCollection();
+        $this->friends = new ArrayCollection();
+        $this->boughtPackages = new ArrayCollection();
+        $this->usersFestival = new ArrayCollection();
+    }
 
 
     public function getId(): ?int
@@ -150,5 +177,131 @@ implements UserInterface, PasswordAuthenticatedUserInterface
     public function getRoles(): array
     {
         return ["ROLE_USER"];
+    }
+
+    /**
+     * @return Collection|Organisator[]
+     */
+    public function getOrganisators(): Collection
+    {
+        return $this->organisators;
+    }
+
+    public function addOrganisator(Organisator $organisator): self
+    {
+        if (!$this->organisators->contains($organisator)) {
+            $this->organisators[] = $organisator;
+            $organisator->setRelatedUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrganisator(Organisator $organisator): self
+    {
+        if ($this->organisators->removeElement($organisator)) {
+            // set the owning side to null (unless already changed)
+            if ($organisator->getRelatedUser() === $this) {
+                $organisator->setRelatedUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getRole(): ?Role
+    {
+        return $this->role;
+    }
+
+    public function setRole(?Role $role): self
+    {
+        $this->role = $role;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|self[]
+     */
+    public function getFriends(): Collection
+    {
+        return $this->friends;
+    }
+
+    public function addFriend(self $friend): self
+    {
+        if (!$this->friends->contains($friend)) {
+            $this->friends[] = $friend;
+        }
+
+        return $this;
+    }
+
+    public function removeFriend(self $friend): self
+    {
+        $this->friends->removeElement($friend);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|BoughtPackage[]
+     */
+    public function getBoughtPackages(): Collection
+    {
+        return $this->boughtPackages;
+    }
+
+    public function addBoughtPackage(BoughtPackage $boughtPackage): self
+    {
+        if (!$this->boughtPackages->contains($boughtPackage)) {
+            $this->boughtPackages[] = $boughtPackage;
+            $boughtPackage->setRelatedUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeBoughtPackage(BoughtPackage $boughtPackage): self
+    {
+        if ($this->boughtPackages->removeElement($boughtPackage)) {
+            // set the owning side to null (unless already changed)
+            if ($boughtPackage->getRelatedUser() === $this) {
+                $boughtPackage->setRelatedUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|UserFestival[]
+     */
+    public function getUsersFestival(): Collection
+    {
+        return $this->usersFestival;
+    }
+
+    public function addUsersFestival(UserFestival $usersFestival): self
+    {
+        if (!$this->usersFestival->contains($usersFestival)) {
+            $this->usersFestival[] = $usersFestival;
+            $usersFestival->setRelatedUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUsersFestival(UserFestival $usersFestival): self
+    {
+        if ($this->usersFestival->removeElement($usersFestival)) {
+            // set the owning side to null (unless already changed)
+            if ($usersFestival->getRelatedUser() === $this) {
+                $usersFestival->setRelatedUser(null);
+            }
+        }
+
+        return $this;
     }
 }

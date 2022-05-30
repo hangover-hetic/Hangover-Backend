@@ -18,6 +18,10 @@ class Post
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     private $image;
 
+    #[ORM\ManyToOne(targetEntity: Screen::class, inversedBy: 'posts')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $screen;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -31,6 +35,18 @@ class Post
     public function setImage(?string $image): self
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    public function getScreen(): ?Screen
+    {
+        return $this->screen;
+    }
+
+    public function setScreen(?Screen $screen): self
+    {
+        $this->screen = $screen;
 
         return $this;
     }

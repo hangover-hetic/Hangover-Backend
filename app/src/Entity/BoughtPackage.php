@@ -3,12 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\BuyedPackagedRepository;
+use App\Repository\BoughtPackageRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: BuyedPackagedRepository::class)]
+#[ORM\Entity(repositoryClass: BoughtPackageRepository::class)]
 #[ApiResource]
-class BuyedPackaged
+class BoughtPackage
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -20,6 +20,13 @@ class BuyedPackaged
 
     #[ORM\Column(type: 'integer')]
     private $pictureNumber;
+
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'boughtPackages')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $relatedUser;
+
+    #[ORM\ManyToOne(targetEntity: Package::class, inversedBy: 'boughtPackages')]
+    private $package;
 
     public function getId(): ?int
     {
@@ -46,6 +53,30 @@ class BuyedPackaged
     public function setPictureNumber(int $pictureNumber): self
     {
         $this->pictureNumber = $pictureNumber;
+
+        return $this;
+    }
+
+    public function getRelatedUser(): ?User
+    {
+        return $this->relatedUser;
+    }
+
+    public function setRelatedUser(?User $relatedUser): self
+    {
+        $this->relatedUser = $relatedUser;
+
+        return $this;
+    }
+
+    public function getPackage(): ?Package
+    {
+        return $this->package;
+    }
+
+    public function setPackage(?Package $package): self
+    {
+        $this->package = $package;
 
         return $this;
     }

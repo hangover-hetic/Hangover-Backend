@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ScreenTemplateRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ScreenTemplateRepository::class)]
@@ -16,21 +18,59 @@ class ScreenTemplate
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $Ãname;
+    private $name;
+
+    #[ORM\OneToMany(mappedBy: 'template', targetEntity: Screen::class)]
+    private $screens;
+
+    public function __construct()
+    {
+        $this->screens = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getÃname(): ?string
+    public function getName(): ?string
     {
-        return $this->Ãname;
+        return $this->name;
     }
 
-    public function setÃname(string $Ãname): self
+    public function setName(string $name): self
     {
-        $this->Ãname = $Ãname;
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Screen[]
+     */
+    public function getScreens(): Collection
+    {
+        return $this->screens;
+    }
+
+    public function addScreen(Screen $screen): self
+    {
+        if (!$this->screens->contains($screen)) {
+            $this->screens[] = $screen;
+            $screen->setTemplate($this);
+        }
+
+        return $this;
+    }
+
+    public function removeScreen(Screen $screen): self
+    {
+        if ($this->screens->removeElement($screen)) {
+            // set the owning side to null (unless already changed)
+            if ($screen->getTemplate() === $this) {
+                $screen->setTemplate(null);
+            }
+        }
 
         return $this;
     }

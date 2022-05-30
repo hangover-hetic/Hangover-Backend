@@ -24,6 +24,9 @@ class Licence
     #[ORM\Column(type: 'boolean')]
     private $is_buyed;
 
+    #[ORM\OneToOne(inversedBy: 'licence', targetEntity: OrganisationTeam::class, cascade: ['persist', 'remove'])]
+    private $organisationTeam;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -61,6 +64,18 @@ class Licence
     public function setIsBuyed(bool $is_buyed): self
     {
         $this->is_buyed = $is_buyed;
+
+        return $this;
+    }
+
+    public function getOrganisationTeam(): ?OrganisationTeam
+    {
+        return $this->organisationTeam;
+    }
+
+    public function setOrganisationTeam(?OrganisationTeam $organisationTeam): self
+    {
+        $this->organisationTeam = $organisationTeam;
 
         return $this;
     }
