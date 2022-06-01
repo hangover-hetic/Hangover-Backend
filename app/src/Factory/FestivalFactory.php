@@ -45,6 +45,7 @@ final class FestivalFactory extends ModelFactory
             'end_date' => self::faker()->dateTimeBetween('-1 year', 'now'), // TODO add DATETIME ORM type manually
             'programmation' => [],
             'map' => [],
+            'location' => self::faker()->city,
         ];
     }
 
