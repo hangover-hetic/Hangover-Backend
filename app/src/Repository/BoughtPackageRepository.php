@@ -2,21 +2,21 @@
 
 namespace App\Repository;
 
-use App\Entity\BuyedPackaged;
+use App\Entity\BoughtPackage;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method BuyedPackaged|null find($id, $lockMode = null, $lockVersion = null)
- * @method BuyedPackaged|null findOneBy(array $criteria, array $orderBy = null)
- * @method BuyedPackaged[]    findAll()
- * @method BuyedPackaged[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method BoughtPackage|null find($id, $lockMode = null, $lockVersion = null)
+ * @method BoughtPackage|null findOneBy(array $criteria, array $orderBy = null)
+ * @method BoughtPackage[]    findAll()
+ * @method BoughtPackage[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class BuyedPackagedRepository extends ServiceEntityRepository
+class BoughtPackageRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, BuyedPackaged::class);
+        parent::__construct($registry, BoughtPackage::class);
     }
 
     // /**

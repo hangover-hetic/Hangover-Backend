@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\FestivalRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: FestivalRepository::class)]
@@ -38,6 +40,25 @@ class Festival
 
     #[ORM\Column(type: 'json')]
     private $map = [];
+
+    #[ORM\ManyToOne(targetEntity: OrganisationTeam::class, inversedBy: 'packages')]
+    private $organisationTeam;
+
+    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Package::class)]
+    private $packages;
+
+    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Screen::class, orphanRemoval: true)]
+    private $screens;
+
+    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: UserFestival::class)]
+    private $usersFestival;
+
+    public function __construct()
+    {
+        $this->packages = new ArrayCollection();
+        $this->screens = new ArrayCollection();
+        $this->usersFestival = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -136,6 +157,108 @@ class Festival
     public function setMap(array $map): self
     {
         $this->map = $map;
+
+        return $this;
+    }
+
+    public function getOrganisationTeam(): ?OrganisationTeam
+    {
+        return $this->organisationTeam;
+    }
+
+    public function setOrganisationTeam(?OrganisationTeam $organisationTeam): self
+    {
+        $this->organisationTeam = $organisationTeam;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Package[]
+     */
+    public function getPackages(): Collection
+    {
+        return $this->packages;
+    }
+
+    public function addPackage(Package $package): self
+    {
+        if (!$this->packages->contains($package)) {
+            $this->packages[] = $package;
+            $package->setFestival($this);
+        }
+
+        return $this;
+    }
+
+    public function removePackage(Package $package): self
+    {
+        if ($this->packages->removeElement($package)) {
+            // set the owning side to null (unless already changed)
+            if ($package->getFestival() === $this) {
+                $package->setFestival(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Screen[]
+     */
+    public function getScreens(): Collection
+    {
+        return $this->screens;
+    }
+
+    public function addScreen(Screen $screen): self
+    {
+        if (!$this->screens->contains($screen)) {
+            $this->screens[] = $screen;
+            $screen->setFestival($this);
+        }
+
+        return $this;
+    }
+
+    public function removeScreen(Screen $screen): self
+    {
+        if ($this->screens->removeElement($screen)) {
+            // set the owning side to null (unless already changed)
+            if ($screen->getFestival() === $this) {
+                $screen->setFestival(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|UserFestival[]
+     */
+    public function getUsersFestival(): Collection
+    {
+        return $this->usersFestival;
+    }
+
+    public function addUsersFestival(UserFestival $usersFestival): self
+    {
+        if (!$this->usersFestival->contains($usersFestival)) {
+            $this->usersFestival[] = $usersFestival;
+            $usersFestival->setFestival($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUsersFestival(UserFestival $usersFestival): self
+    {
+        if ($this->usersFestival->removeElement($usersFestival)) {
+            // set the owning side to null (unless already changed)
+            if ($usersFestival->getFestival() === $this) {
+                $usersFestival->setFestival(null);
+            }
+        }
 
         return $this;
     }

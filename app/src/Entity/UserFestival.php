@@ -21,6 +21,13 @@ class UserFestival
     #[ORM\Column(type: 'json', nullable: true)]
     private $agenda = [];
 
+    #[ORM\ManyToOne(targetEntity: Festival::class, inversedBy: 'usersFestival')]
+    private $festival;
+
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'usersFestival')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $relatedUser;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -46,6 +53,30 @@ class UserFestival
     public function setAgenda(?array $agenda): self
     {
         $this->agenda = $agenda;
+
+        return $this;
+    }
+
+    public function getFestival(): ?Festival
+    {
+        return $this->festival;
+    }
+
+    public function setFestival(?Festival $festival): self
+    {
+        $this->festival = $festival;
+
+        return $this;
+    }
+
+    public function getRelatedUser(): ?User
+    {
+        return $this->relatedUser;
+    }
+
+    public function setRelatedUser(?User $relatedUser): self
+    {
+        $this->relatedUser = $relatedUser;
 
         return $this;
     }

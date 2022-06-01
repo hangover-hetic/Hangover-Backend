@@ -40,7 +40,8 @@
         "fakerphp/faker": "^1.19",
         "symfony/maker-bundle": "^1.36",
         "symfony/stopwatch": "6.0.*",
-        "symfony/web-profiler-bundle": "6.0.*"
+        "symfony/web-profiler-bundle": "6.0.*",
+        "zenstruck/foundry": "^1.19"
     },
     "config": {
         "allow-plugins": {
