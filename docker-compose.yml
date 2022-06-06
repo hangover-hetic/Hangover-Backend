@@ -28,8 +28,8 @@ services:
     container_name: database
     image: 'postgres:13-alpine'
     environment:
-      POSTGRES_PASSWORD: lccpwd
-      POSTGRES_USER: lccuser
+      POSTGRES_PASSWORD: root
+      POSTGRES_USER: root
       POSTGRES_DB:  hangover
     ports:
       # To allow the host machine to access the ports below, modify the lines below.
@@ -42,12 +42,10 @@ services:
 
   pgadmin:
     image: dpage/pgadmin4
-    depends_on:
-      - database
+    container_name: hangover_db
     environment:
       PGADMIN_DEFAULT_EMAIL: 'lcc@pgadmin.org'
-      PGADMIN_DEFAULT_PASSWORD: 'lccpwd'
-      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_DEFAULT_PASSWORD: 'root'
     volumes:
       - pgadmin:/var/lib/pgadmin
 
