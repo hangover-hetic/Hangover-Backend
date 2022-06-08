@@ -6,6 +6,8 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\PostRepository;
 use Doctrine\ORM\Mapping as ORM;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 #[ORM\Entity(repositoryClass: PostRepository::class)]
 #[ApiResource]
 class Post
@@ -13,10 +15,11 @@ class Post
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private int $id;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private $image;
+    #[Assert\Url]
+    private string $image;
 
     #[ORM\ManyToOne(targetEntity: Screen::class, inversedBy: 'posts')]
     #[ORM\JoinColumn(nullable: false)]

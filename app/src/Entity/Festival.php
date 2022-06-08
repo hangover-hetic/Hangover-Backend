@@ -3,10 +3,12 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Config\FestivalStatus;
 use App\Repository\FestivalRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FestivalRepository::class)]
 #[ApiResource]
@@ -18,28 +20,39 @@ class Festival
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $name;
+    #[Assert\Length(min: 4, max: 30)]
+    private ?string $name;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $description;
+    #[Assert\Length(min: 10)]
+    private ?string $description;
 
     #[ORM\Column(type: 'datetime')]
-    private $start_date;
+    private ?\DateTimeInterface $start_date;
 
     #[ORM\Column(type: 'datetime')]
-    private $end_date;
+    private ?\DateTimeInterface $end_date;
 
     #[ORM\Column(type: 'json')]
-    private $programmation = [];
+    #[Assert\Json(
+        message: "You've entered an invalid Json."
+    )]
+    private ?array $programmation = [];
 
     #[ORM\Column(type: 'array', nullable: true)]
-    private $gallery = [];
+    private ?array $gallery = [];
 
-    #[ORM\Column(type: 'string', length: 20, nullable: true)]
-    private $status;
+    #[ORM\Column(type: 'string', length: 20, nullable: true, enumType: FestivalStatus::class)]
+    private ?FestivalStatus $status;
 
     #[ORM\Column(type: 'json')]
-    private $map = [];
+    #[Assert\Json(
+        message: "You've entered an invalid Json."
+    )]
+    private ?array $map = [];
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private  ?string $location;
 
     #[ORM\ManyToOne(targetEntity: OrganisationTeam::class, inversedBy: 'packages')]
     private $organisationTeam;
@@ -53,14 +66,14 @@ class Festival
     #[ORM\OneToMany(mappedBy: 'festival', targetEntity: UserFestival::class)]
     private $usersFestival;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private $location;
+
 
     public function __construct()
     {
         $this->packages = new ArrayCollection();
         $this->screens = new ArrayCollection();
         $this->usersFestival = new ArrayCollection();
+        $this->status = FestivalStatus::Draft;
     }
 
     public function getId(): ?int
@@ -140,7 +153,7 @@ class Festival
         return $this;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): ?FestivalStatus
     {
         return $this->status;
     }

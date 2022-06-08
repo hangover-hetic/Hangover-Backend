@@ -7,7 +7,7 @@ use App\Repository\ScreenRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: ScreenRepository::class)]
 #[ApiResource]
 class Screen
@@ -15,10 +15,11 @@ class Screen
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private int $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $name;
+    #[Assert\Length(min:1)]
+    private string $name;
 
     #[ORM\ManyToOne(targetEntity: Festival::class, inversedBy: 'screens')]
     #[ORM\JoinColumn(nullable: false)]

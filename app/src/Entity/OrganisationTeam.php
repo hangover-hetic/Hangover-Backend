@@ -8,6 +8,8 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 #[ORM\Entity(repositoryClass: OrganisationTeamRepository::class)]
 #[ApiResource]
 class OrganisationTeam
@@ -15,10 +17,11 @@ class OrganisationTeam
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private int $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $name;
+    #[Assert\Length(min: 5)]
+    private ?string $name;
 
     #[ORM\OneToOne(mappedBy: 'organisationTeam', targetEntity: Licence::class, cascade: ['persist', 'remove'])]
     private $licence;
