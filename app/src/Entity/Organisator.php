@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\OrganisatorRepository;
 use Doctrine\ORM\Mapping as ORM;
 
+use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: OrganisatorRepository::class)]
 #[ApiResource]
 class Organisator
@@ -13,10 +14,10 @@ class Organisator
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private int $id;
 
     #[ORM\Column(type: 'boolean')]
-    private $isAdministrator;
+    private bool $isAdministrator;
 
     #[ORM\ManyToOne(targetEntity: OrganisationTeam::class, inversedBy: 'organisators')]
     #[ORM\JoinColumn(nullable: false)]
@@ -25,6 +26,12 @@ class Organisator
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'organisators')]
     #[ORM\JoinColumn(nullable: true)]
     private $relatedUser;
+
+    public function __construct()
+    {
+        $this->isAdministrator = true;
+    }
+
 
     public function getId(): ?int
     {

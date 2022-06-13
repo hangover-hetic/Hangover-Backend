@@ -6,6 +6,8 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\BoughtPackageRepository;
 use Doctrine\ORM\Mapping as ORM;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 #[ORM\Entity(repositoryClass: BoughtPackageRepository::class)]
 #[ApiResource]
 class BoughtPackage
@@ -13,13 +15,15 @@ class BoughtPackage
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id;
 
     #[ORM\Column(type: 'integer')]
-    private $number;
+    #[Assert\Positive]
+    private ?int $number;
 
     #[ORM\Column(type: 'integer')]
-    private $pictureNumber;
+    #[Assert\Positive]
+    private ?int $pictureNumber;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'boughtPackages')]
     #[ORM\JoinColumn(nullable: false)]

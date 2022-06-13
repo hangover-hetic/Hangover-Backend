@@ -7,22 +7,28 @@ use App\Repository\LicenceRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: LicenceRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    itemOperations: [
+        'get',
+        'put',
+        'delete',
+        'patch'],
+)]
 class Licence
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private ?int $id;
 
     #[ORM\Column(type: 'date')]
-    private $start_date;
+    private ?\DateTimeInterface $start_date;
 
     #[ORM\Column(type: 'date')]
-    private $end_date;
+    private ?\DateTimeInterface $end_date;
 
     #[ORM\Column(type: 'boolean')]
-    private $is_buyed;
+    private ?bool $is_buyed;
 
     #[ORM\OneToOne(inversedBy: 'licence', targetEntity: OrganisationTeam::class, cascade: ['persist', 'remove'])]
     private $organisationTeam;

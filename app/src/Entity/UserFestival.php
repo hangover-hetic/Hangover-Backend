@@ -6,6 +6,8 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\UserFestivalRepository;
 use Doctrine\ORM\Mapping as ORM;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 #[ORM\Entity(repositoryClass: UserFestivalRepository::class)]
 #[ApiResource]
 class UserFestival
@@ -13,12 +15,14 @@ class UserFestival
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private int $id;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Assert\Url]
     private $ticketPath;
 
     #[ORM\Column(type: 'json', nullable: true)]
+    #[Assert\Json]
     private $agenda = [];
 
     #[ORM\ManyToOne(targetEntity: Festival::class, inversedBy: 'usersFestival')]
