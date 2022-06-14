@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Config\FestivalStatus;
 use App\Repository\FestivalRepository;
@@ -36,9 +37,6 @@ class Festival
     #[ORM\Column(type: 'json')]
     private ?array $programmation = [];
 
-    #[ORM\Column(type: 'array', nullable: true)]
-    private ?array $gallery = [];
-
     #[ORM\Column(type: 'string', length: 20, nullable: true, enumType: FestivalStatus::class)]
     private ?FestivalStatus $status;
 
@@ -60,7 +58,9 @@ class Festival
     #[ORM\OneToMany(mappedBy: 'festival', targetEntity: UserFestival::class, orphanRemoval: true)]
     private $usersFestival;
 
-
+    #[ORM\ManyToMany(targetEntity: Media::class)]
+    #[ApiProperty(iri: 'http://schema.org/image')]
+    private $gallery;
 
     public function __construct()
     {
@@ -68,6 +68,7 @@ class Festival
         $this->screens = new ArrayCollection();
         $this->usersFestival = new ArrayCollection();
         $this->status = FestivalStatus::Draft;
+        $this->gallery = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -131,18 +132,6 @@ class Festival
     public function setProgrammation(array $programmation): self
     {
         $this->programmation = $programmation;
-
-        return $this;
-    }
-
-    public function getGallery(): ?array
-    {
-        return $this->gallery;
-    }
-
-    public function setGallery(?array $gallery): self
-    {
-        $this->gallery = $gallery;
 
         return $this;
     }
@@ -281,6 +270,30 @@ class Festival
     public function setLocation(?string $location): self
     {
         $this->location = $location;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Media>
+     */
+    public function getGallery(): Collection
+    {
+        return $this->gallery;
+    }
+
+    public function addGallery(Media $gallery): self
+    {
+        if (!$this->gallery->contains($gallery)) {
+            $this->gallery[] = $gallery;
+        }
+
+        return $this;
+    }
+
+    public function removeGallery(Media $gallery): self
+    {
+        $this->gallery->removeElement($gallery);
 
         return $this;
     }
