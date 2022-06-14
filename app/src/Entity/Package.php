@@ -32,7 +32,7 @@ class Package
     #[ORM\ManyToOne(targetEntity: Festival::class, inversedBy: 'packages')]
     private $festival;
 
-    #[ORM\OneToMany(mappedBy: 'package', targetEntity: BoughtPackage::class)]
+    #[ORM\OneToMany(mappedBy: 'package', targetEntity: BoughtPackage::class, orphanRemoval: true)]
     private $boughtPackages;
 
     public function __construct()

@@ -20,11 +20,11 @@ class Festival
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Assert\Length(min: 4, max: 30)]
+    #[Assert\NotNull]
     private ?string $name;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Assert\Length(min: 10)]
+    #[Assert\NotNull]
     private ?string $description;
 
     #[ORM\Column(type: 'datetime')]
@@ -34,9 +34,6 @@ class Festival
     private ?\DateTimeInterface $end_date;
 
     #[ORM\Column(type: 'json')]
-    #[Assert\Json(
-        message: "You've entered an invalid Json."
-    )]
     private ?array $programmation = [];
 
     #[ORM\Column(type: 'array', nullable: true)]
@@ -46,9 +43,6 @@ class Festival
     private ?FestivalStatus $status;
 
     #[ORM\Column(type: 'json')]
-    #[Assert\Json(
-        message: "You've entered an invalid Json."
-    )]
     private ?array $map = [];
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
@@ -57,13 +51,13 @@ class Festival
     #[ORM\ManyToOne(targetEntity: OrganisationTeam::class, inversedBy: 'packages')]
     private $organisationTeam;
 
-    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Package::class)]
+    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Package::class, orphanRemoval: true)]
     private $packages;
 
     #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Screen::class, orphanRemoval: true)]
     private $screens;
 
-    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: UserFestival::class)]
+    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: UserFestival::class, orphanRemoval: true)]
     private $usersFestival;
 
 

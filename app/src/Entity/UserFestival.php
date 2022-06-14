@@ -22,7 +22,6 @@ class UserFestival
     private $ticketPath;
 
     #[ORM\Column(type: 'json', nullable: true)]
-    #[Assert\Json]
     private $agenda = [];
 
     #[ORM\ManyToOne(targetEntity: Festival::class, inversedBy: 'usersFestival')]
