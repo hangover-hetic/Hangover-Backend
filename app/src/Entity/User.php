@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-
+use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
 #[ApiResource]
@@ -19,28 +19,33 @@ implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private int $id;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private $firstName;
+    private string $firstName;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private $lastName;
+    private string $lastName;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $email;
+    #[Assert\Email]
+    private string $email;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $password;
+    #[Assert\Length(min: 6)]
+    private string $password;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $phone;
+    #[Assert\Regex('/^(?:0|\s?)[1-79](?:[\.\-\s]?\d\d){4}$/')]
+    private string $phone;
 
     #[ORM\Column(type: 'text', nullable: true)]
-    private $address;
+    #[Assert\Length(min: 6)]
+    private string $address;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private $country;
+    #[Assert\Length(min: 6)]
+    private string $country;
 
     #[ORM\OneToMany(mappedBy: 'relatedUser', targetEntity: Organisator::class)]
     private $organisators;

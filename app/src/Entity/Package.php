@@ -7,7 +7,7 @@ use App\Repository\PackageRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: PackageRepository::class)]
 #[ApiResource]
 class Package
@@ -15,21 +15,24 @@ class Package
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private $id;
+    private int $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $name;
+    #[Assert\Length(min:5)]
+    private ?string $name;
 
     #[ORM\Column(type: 'float')]
+    #[Assert\Positive]
     private $price;
 
     #[ORM\Column(type: 'integer')]
+    #[Assert\Positive]
     private $pictureNumber;
 
     #[ORM\ManyToOne(targetEntity: Festival::class, inversedBy: 'packages')]
     private $festival;
 
-    #[ORM\OneToMany(mappedBy: 'package', targetEntity: BoughtPackage::class)]
+    #[ORM\OneToMany(mappedBy: 'package', targetEntity: BoughtPackage::class, orphanRemoval: true)]
     private $boughtPackages;
 
     public function __construct()

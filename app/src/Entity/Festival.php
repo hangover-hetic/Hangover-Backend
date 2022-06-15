@@ -2,11 +2,14 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Config\FestivalStatus;
 use App\Repository\FestivalRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FestivalRepository::class)]
 #[ApiResource]
@@ -18,49 +21,54 @@ class Festival
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $name;
+    #[Assert\NotNull]
+    private ?string $name;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $description;
+    #[Assert\NotNull]
+    private ?string $description;
 
     #[ORM\Column(type: 'datetime')]
-    private $start_date;
+    private ?\DateTimeInterface $start_date;
 
     #[ORM\Column(type: 'datetime')]
-    private $end_date;
+    private ?\DateTimeInterface $end_date;
 
     #[ORM\Column(type: 'json')]
-    private $programmation = [];
+    private ?array $programmation = [];
 
-    #[ORM\Column(type: 'array', nullable: true)]
-    private $gallery = [];
-
-    #[ORM\Column(type: 'string', length: 20, nullable: true)]
-    private $status;
+    #[ORM\Column(type: 'string', length: 20, nullable: true, enumType: FestivalStatus::class)]
+    private ?string $status;
 
     #[ORM\Column(type: 'json')]
-    private $map = [];
+    private ?array $map = [];
+
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private  ?string $location;
 
     #[ORM\ManyToOne(targetEntity: OrganisationTeam::class, inversedBy: 'packages')]
     private $organisationTeam;
 
-    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Package::class)]
+    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Package::class, orphanRemoval: true)]
     private $packages;
 
     #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Screen::class, orphanRemoval: true)]
     private $screens;
 
-    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: UserFestival::class)]
+    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: UserFestival::class, orphanRemoval: true)]
     private $usersFestival;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private $location;
+    #[ORM\ManyToMany(targetEntity: Media::class)]
+    #[ApiProperty(iri: 'http://schema.org/image')]
+    private $gallery;
 
     public function __construct()
     {
         $this->packages = new ArrayCollection();
         $this->screens = new ArrayCollection();
         $this->usersFestival = new ArrayCollection();
+        $this->status = FestivalStatus::Draft;
+        $this->gallery = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -124,18 +132,6 @@ class Festival
     public function setProgrammation(array $programmation): self
     {
         $this->programmation = $programmation;
-
-        return $this;
-    }
-
-    public function getGallery(): ?array
-    {
-        return $this->gallery;
-    }
-
-    public function setGallery(?array $gallery): self
-    {
-        $this->gallery = $gallery;
 
         return $this;
     }
@@ -274,6 +270,30 @@ class Festival
     public function setLocation(?string $location): self
     {
         $this->location = $location;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Media>
+     */
+    public function getGallery(): Collection
+    {
+        return $this->gallery;
+    }
+
+    public function addGallery(Media $gallery): self
+    {
+        if (!$this->gallery->contains($gallery)) {
+            $this->gallery[] = $gallery;
+        }
+
+        return $this;
+    }
+
+    public function removeGallery(Media $gallery): self
+    {
+        $this->gallery->removeElement($gallery);
 
         return $this;
     }

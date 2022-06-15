@@ -9,6 +9,7 @@ use App\Entity\Organisator;
 use App\Entity\Post;
 use App\Entity\Role;
 use App\Entity\Screen;
+use App\Entity\User;
 use App\Factory\BoughtPackageFactory;
 use App\Factory\FestivalFactory;
 use App\Factory\LicenceFactory;
@@ -22,9 +23,16 @@ use App\Factory\UserFactory;
 use App\Factory\UserFestivalFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
+
+    public function __construct(UserPasswordHasherInterface $hasher)
+    {
+        $this->hasher = $hasher;
+    }
+
     public function load(ObjectManager $manager): void
     {
         // $product = new Product();
@@ -39,6 +47,13 @@ class AppFixtures extends Fixture
         $manager->persist($admin);
 
         $roles = [$admin, $user];
+
+        $userAdmin = new User();
+        $userAdmin->setEmail("admin@hangover.com");
+        $userAdmin->setPassword($this->hasher->hashPassword($userAdmin, "password"));
+        $userAdmin->setPhone("0698784523");
+        $userAdmin->setRole($user);
+        $manager->persist($userAdmin);
 
         UserFactory::createMany(10, function () use ($roles) {
             return ['role' => $roles[array_rand($roles)]];
