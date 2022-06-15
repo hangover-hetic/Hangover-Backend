@@ -54,11 +54,31 @@ services:
     ports:
       - '8081:80'
 
+  caddy:
+    image: dunglas/mercure
+    restart: unless-stopped
+    environment:
+      # Uncomment the following line to disable HTTPS
+      SERVER_NAME: ':80'
+      MERCURE_PUBLISHER_JWT_KEY: 'hangover-mercure'
+      MERCURE_SUBSCRIBER_JWT_KEY: 'hangover-mercure'
+    # Uncomment the following line to enable the development mode
+    command: /usr/bin/caddy run -config /etc/caddy/Caddyfile.dev
+    ports:
+      - "1234:80"
+      - "443:443"
+    volumes:
+      - ./caddy/caddy_data:/data
+      - ./caddy/caddy_config:/config
+
 volumes:
   db-data:
   pgadmin:
   app:
   default.conf:
+  caddy_data:
+  caddy_config:
+
 
 
 
