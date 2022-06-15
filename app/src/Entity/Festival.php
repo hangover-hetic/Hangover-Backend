@@ -38,7 +38,7 @@ class Festival
     private ?array $programmation = [];
 
     #[ORM\Column(type: 'string', length: 20, nullable: true, enumType: FestivalStatus::class)]
-    private ?FestivalStatus $status;
+    private ?string $status;
 
     #[ORM\Column(type: 'json')]
     private ?array $map = [];
@@ -136,7 +136,7 @@ class Festival
         return $this;
     }
 
-    public function getStatus(): ?FestivalStatus
+    public function getStatus(): ?string
     {
         return $this->status;
     }
