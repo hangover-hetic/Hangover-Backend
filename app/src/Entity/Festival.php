@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Config\FestivalStatus;
 use App\Repository\FestivalRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -15,6 +14,15 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource]
 class Festival
 {
+    const STATUS_DRAFT = "DRAFT";
+    const STATUS_PUBLISHED = "PUBLISHED";
+    const STATUS_VALIDATED = "VALIDATED";
+    const STATUS = [
+        Festival::STATUS_DRAFT,
+        Festival::STATUS_PUBLISHED,
+        Festival::STATUS_VALIDATED
+    ];
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -37,14 +45,15 @@ class Festival
     #[ORM\Column(type: 'json')]
     private ?array $programmation = [];
 
-    #[ORM\Column(type: 'string', length: 20, nullable: true, enumType: FestivalStatus::class)]
-    private ?string $status;
+    #[ORM\Column(type: 'string', length: 20, nullable: true)]
+    #[Assert\Choice(choices: Festival::STATUS, message: 'Choose a valid status : DRAFT, PUBLISHED, VALIDATED')]
+    private ?string $status ;
 
     #[ORM\Column(type: 'json')]
     private ?array $map = [];
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    private  ?string $location;
+    private ?string $location;
 
     #[ORM\ManyToOne(targetEntity: OrganisationTeam::class, inversedBy: 'packages')]
     private $organisationTeam;
@@ -67,7 +76,7 @@ class Festival
         $this->packages = new ArrayCollection();
         $this->screens = new ArrayCollection();
         $this->usersFestival = new ArrayCollection();
-        $this->status = FestivalStatus::Draft;
+        $this->status = Festival::STATUS_DRAFT;
         $this->gallery = new ArrayCollection();
     }
 
