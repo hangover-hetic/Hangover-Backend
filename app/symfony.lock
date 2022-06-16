@@ -118,6 +118,9 @@
     "jms/metadata": {
         "version": "2.6.1"
     },
+    "knplabs/knp-gaufrette-bundle": {
+        "version": "v0.7.2"
+    },
     "laminas/laminas-code": {
         "version": "4.5.1"
     },
@@ -321,6 +324,18 @@
         },
         "files": [
             "config/packages/mercure.yaml"
+        ]
+    },
+    "symfony/messenger": {
+        "version": "6.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "main",
+            "version": "6.0",
+            "ref": "2523f7d31488903e247a522e760dc279be7f7aaf"
+        },
+        "files": [
+            "config/packages/messenger.yaml"
         ]
     },
     "symfony/mime": {

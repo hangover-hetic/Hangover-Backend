@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\MediaController;
+use App\Controller\MultipleMediaController;
 use App\Repository\MediaRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
@@ -15,7 +16,8 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 /**
  * @Vich\Uploadable
  */
-#[ORM\Entity(repositoryClass: MediaRepository::class)]
+#[
+    ORM\Entity(repositoryClass: MediaRepository::class)]
 #[ApiResource(
     collectionOperations: [
         'get',
@@ -41,6 +43,31 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
                 ],
             ],
         ],
+        'multiple' => [
+            "method" => "POST",
+            'path' => '/media/multiple',
+            'controller' => MultipleMediaController::class,
+            'deserialize' => false,
+            'validation_groups' => ['Default', 'media_object_create'],
+            'openapi_context' => [
+                "summary" => "Upload multiple media in one request",
+                'requestBody' => [
+                    'content' => [
+                        'multipart/form-data' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'files' => [
+                                        'type' => 'string',
+                                        'format' => 'binary',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]
     ],
     iri: 'http://schema.org/MediaObject',
     itemOperations: ['get'],

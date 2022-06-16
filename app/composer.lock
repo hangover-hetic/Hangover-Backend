@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "07b5a89161be5169ba796df00d2679b0",
+    "content-hash": "35cd1a6648f058d213b89ccb211a4a0b",
     "packages": [
         {
             "name": "api-platform/core",
@@ -1680,6 +1680,38 @@
             "time": "2022-05-05T09:31:05+00:00"
         },
         {
+            "name": "gaufrette/local-adapter",
+            "version": "v0.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Gaufrette/local-adapter.git",
+                "reference": "e3bf9a71838516d23910160dd818d7890fb4c011"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Gaufrette/local-adapter/zipball/e3bf9a71838516d23910160dd818d7890fb4c011",
+                "reference": "e3bf9a71838516d23910160dd818d7890fb4c011",
+                "shasum": ""
+            },
+            "require": {
+                "ext-fileinfo": "*",
+                "knplabs/gaufrette": "~0.3"
+            },
+            "type": "metapackage",
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "KnpLabs",
+                    "email": "hello@knplabs.com"
+                }
+            ],
+            "description": "Local adapter for Gaufrette",
+            "support": {
+                "source": "https://github.com/Gaufrette/local-adapter/tree/master"
+            },
+            "time": "2017-06-17T15:13:50+00:00"
+        },
+        {
             "name": "jms/metadata",
             "version": "2.6.1",
             "source": {
@@ -1742,6 +1774,140 @@
                 "source": "https://github.com/schmittjoh/metadata/tree/2.6.1"
             },
             "time": "2021-11-22T12:27:42+00:00"
+        },
+        {
+            "name": "knplabs/gaufrette",
+            "version": "v0.10.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/KnpLabs/Gaufrette.git",
+                "reference": "ef5ec9d72c06d21febfa09b36d5c3d8e3af9cf8b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/KnpLabs/Gaufrette/zipball/ef5ec9d72c06d21febfa09b36d5c3d8e3af9cf8b",
+                "reference": "ef5ec9d72c06d21febfa09b36d5c3d8e3af9cf8b",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "conflict": {
+                "microsoft/windowsazure": "<0.4.3"
+            },
+            "require-dev": {
+                "mikey179/vfsstream": "v1.x-dev as 1.7.0",
+                "phpspec/phpspec": "^5.1 || ^6.2",
+                "phpunit/phpunit": "~7.5"
+            },
+            "suggest": {
+                "ext-fileinfo": "This extension is used to automatically detect the content-type of a file in the AwsS3, OpenCloud, AzureBlogStorage and GoogleCloudStorage adapters",
+                "knplabs/knp-gaufrette-bundle": "to use with Symfony"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.10.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-0": {
+                    "Gaufrette": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "KnpLabs Team",
+                    "homepage": "http://knplabs.com"
+                },
+                {
+                    "name": "The contributors",
+                    "homepage": "http://github.com/knplabs/Gaufrette/contributors"
+                }
+            ],
+            "description": "PHP library that provides a filesystem abstraction layer",
+            "homepage": "http://knplabs.com",
+            "keywords": [
+                "abstraction",
+                "file",
+                "filesystem",
+                "media"
+            ],
+            "support": {
+                "issues": "https://github.com/KnpLabs/Gaufrette/issues",
+                "source": "https://github.com/KnpLabs/Gaufrette/tree/v0.10.0"
+            },
+            "time": "2020-10-05T19:26:39+00:00"
+        },
+        {
+            "name": "knplabs/knp-gaufrette-bundle",
+            "version": "v0.7.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/KnpLabs/KnpGaufretteBundle.git",
+                "reference": "9cf8706e9f01d4a7ee5013261a10768efdfebb0f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/KnpLabs/KnpGaufretteBundle/zipball/9cf8706e9f01d4a7ee5013261a10768efdfebb0f",
+                "reference": "9cf8706e9f01d4a7ee5013261a10768efdfebb0f",
+                "shasum": ""
+            },
+            "require": {
+                "knplabs/gaufrette": "^0.10",
+                "php": ">=7.1",
+                "symfony/config": "^4.4|^5.0|^6.0",
+                "symfony/dependency-injection": "^4.4|^5.0|^6.0",
+                "symfony/framework-bundle": "^4.4|^5.0|^6.0"
+            },
+            "require-dev": {
+                "symfony/console": "^4.4|^5.0|^6.0",
+                "symfony/filesystem": "^4.0|^5.0|^6.0",
+                "symfony/phpunit-bridge": "^5.4",
+                "symfony/yaml": "^4.0|^5.0|^6.0"
+            },
+            "type": "symfony-bundle",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.7.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Knp\\Bundle\\GaufretteBundle\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Antoine Hérault",
+                    "email": "antoine.herault@gmail.com"
+                },
+                {
+                    "name": "The contributors",
+                    "homepage": "https://github.com/knplabs/KnpGaufretteBundle/contributors"
+                }
+            ],
+            "description": "Allows to easily use the Gaufrette library in a Symfony project",
+            "homepage": "http://knplabs.com",
+            "keywords": [
+                "abstraction",
+                "file",
+                "filesystem",
+                "media"
+            ],
+            "support": {
+                "issues": "https://github.com/KnpLabs/KnpGaufretteBundle/issues",
+                "source": "https://github.com/KnpLabs/KnpGaufretteBundle/tree/v0.7.2"
+            },
+            "time": "2022-03-21T10:48:39+00:00"
         },
         {
             "name": "laminas/laminas-code",
@@ -4786,6 +4952,91 @@
                 }
             ],
             "time": "2022-06-12T17:10:33+00:00"
+        },
+        {
+            "name": "symfony/messenger",
+            "version": "v6.0.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symfony/messenger.git",
+                "reference": "8ba92cff412af800ac9232728f0f659f2261a230"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symfony/messenger/zipball/8ba92cff412af800ac9232728f0f659f2261a230",
+                "reference": "8ba92cff412af800ac9232728f0f659f2261a230",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=8.0.2",
+                "psr/log": "^1|^2|^3"
+            },
+            "conflict": {
+                "symfony/event-dispatcher": "<5.4",
+                "symfony/framework-bundle": "<5.4",
+                "symfony/http-kernel": "<5.4",
+                "symfony/serializer": "<5.4"
+            },
+            "require-dev": {
+                "psr/cache": "^1.0|^2.0|^3.0",
+                "symfony/console": "^5.4|^6.0",
+                "symfony/dependency-injection": "^5.4|^6.0",
+                "symfony/event-dispatcher": "^5.4|^6.0",
+                "symfony/http-kernel": "^5.4|^6.0",
+                "symfony/process": "^5.4|^6.0",
+                "symfony/property-access": "^5.4|^6.0",
+                "symfony/routing": "^5.4|^6.0",
+                "symfony/serializer": "^5.4|^6.0",
+                "symfony/service-contracts": "^1.1|^2|^3",
+                "symfony/stopwatch": "^5.4|^6.0",
+                "symfony/validator": "^5.4|^6.0"
+            },
+            "suggest": {
+                "enqueue/messenger-adapter": "For using the php-enqueue library as a transport."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Symfony\\Component\\Messenger\\": ""
+                },
+                "exclude-from-classmap": [
+                    "/Tests/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Samuel Roze",
+                    "email": "samuel.roze@gmail.com"
+                },
+                {
+                    "name": "Symfony Community",
+                    "homepage": "https://symfony.com/contributors"
+                }
+            ],
+            "description": "Helps applications send and receive messages to/from other applications or via message queues",
+            "homepage": "https://symfony.com",
+            "support": {
+                "source": "https://github.com/symfony/messenger/tree/v6.0.8"
+            },
+            "funding": [
+                {
+                    "url": "https://symfony.com/sponsor",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/fabpot",
+                    "type": "github"
+                },
+                {
+                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+                    "type": "tidelift"
+                }
+            ],
+            "time": "2022-04-12T16:11:42+00:00"
         },
         {
             "name": "symfony/mime",
