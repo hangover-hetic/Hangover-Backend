@@ -20,7 +20,9 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
     ORM\Entity(repositoryClass: MediaRepository::class)]
 #[ApiResource(
     collectionOperations: [
-        'get',
+        'get' => [
+            'normalization_context' => ['groups' => ['media_object_collection_read']],
+        ],
         'post' => [
             'controller' => MediaController::class,
             'deserialize' => false,
@@ -76,11 +78,11 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 class Media
 {
     #[ORM\Id, ORM\Column, ORM\GeneratedValue]
-    #[Groups(['media_object:read'])]
+    #[Groups(['media_object:read', 'media_object_collection_read', "festival:read", 'item:festival:read'])]
     private ?int $id = null;
 
     #[ApiProperty(iri: 'http://schema.org/contentUrl')]
-    #[Groups(['media_object:read'])]
+    #[Groups(['media_object:read', 'media_object_collection_read', "festival:read", 'item:festival:read'])]
     public ?string $contentUrl = null;
 
     /**
