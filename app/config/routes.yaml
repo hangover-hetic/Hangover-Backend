@@ -8,7 +8,7 @@ kernel:
 
 
 authentication_token:
-    path: /api/login
+    path: /api/authentication_token
     methods: ['POST']
 
 swagger_ui:

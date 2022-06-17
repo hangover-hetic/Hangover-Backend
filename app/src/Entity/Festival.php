@@ -13,7 +13,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FestivalRepository::class)]
 #[ApiResource(
-    itemOperations: ["get" => ["normalization_context" => ['groups' => 'item:festival:read']], "put", "post", "delete"],
+    collectionOperations:["get", "post"],
+    itemOperations: ["get" => ["normalization_context" => ['groups' => 'item:festival:read']], "put", "delete"],
     normalizationContext: ["groups" => ["festival:read"]]
 )]
 class Festival
