@@ -9,67 +9,102 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\Table(name: '`user`')]
-#[ApiResource]
+#[ApiResource(
+    collectionOperations: [
+        "get" => [
+            "normalization_context" => [
+                "groups" => ["collection:user:read"]
+            ]
+        ],
+        "post"
+    ],
+    itemOperations: [
+        "get" => [
+            "normalization_context" => [
+                "groups" => ["item:user:read"]
+            ]
+        ],
+        "put",
+        "delete"
+    ], normalizationContext: ["groups" => ["user:read"]]
+)]
 class User
-implements UserInterface, PasswordAuthenticatedUserInterface
+    implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(["friendship:read", "user:read", "collection:user:read", "item:user:read"])]
     private int $id;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(["friendship:read", "user:read", "collection:user:read", "item:user:read"])]
     private string $firstName;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(["friendship:read", "user:read", "collection:user:read", "item:user:read"])]
     private string $lastName;
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\Email]
+    #[Groups(["user:read", "collection:user:read", "item:user:read"])]
     private string $email;
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\Length(min: 6)]
     private string $password;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Assert\Regex('/^(?:0|\s?)[1-79](?:[\.\-\s]?\d\d){4}$/')]
+    #[Groups(["user:read", "item:user:read"])]
     private string $phone;
 
     #[ORM\Column(type: 'text', nullable: true)]
     #[Assert\Length(min: 6)]
+    #[Groups(["user:read", "item:user:read"])]
     private string $address;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Assert\Length(min: 6)]
+    #[Groups(["user:read", "item:user:read"])]
     private string $country;
 
     #[ORM\OneToMany(mappedBy: 'relatedUser', targetEntity: Organisator::class)]
+    #[Groups(["item:user:read"])]
     private $organisators;
 
-    #[ORM\ManyToOne(targetEntity: Role::class, inversedBy: 'users')]
-    #[ORM\JoinColumn(nullable: false)]
-    private $role;
-
-    #[ORM\ManyToMany(targetEntity: self::class)]
-    private $friends;
-
     #[ORM\OneToMany(mappedBy: 'relatedUser', targetEntity: BoughtPackage::class, orphanRemoval: true)]
+    #[Groups(["item:user:read"])]
     private $boughtPackages;
 
     #[ORM\OneToMany(mappedBy: 'relatedUser', targetEntity: UserFestival::class, orphanRemoval: true)]
+    #[Groups(["user:read", "item:user:read"])]
     private $usersFestival;
 
+    #[ORM\OneToMany(mappedBy: 'relatedUser', targetEntity: Friendship::class, orphanRemoval: true)]
+    #[Groups(["item:user:read"])]
+    private $friendships;
+
+    #[ORM\OneToMany(mappedBy: 'friend', targetEntity: Friendship::class, orphanRemoval: true)]
+    #[Groups(["item:user:read"])]
+    private $friendsWithMe;
+
+    #[ORM\Column(type: 'array')]
+    private $roles = [];
 
     public function __construct()
     {
         $this->organisators = new ArrayCollection();
-        $this->friends = new ArrayCollection();
         $this->boughtPackages = new ArrayCollection();
         $this->usersFestival = new ArrayCollection();
+        $this->friendships = new ArrayCollection();
+        $this->friendsWithMe = new ArrayCollection();
+        $this->roles = [];
     }
 
 
@@ -163,7 +198,7 @@ implements UserInterface, PasswordAuthenticatedUserInterface
     }
 
 
-    public function getSalt() : ?string
+    public function getSalt(): ?string
     {
         return null;
     }
@@ -176,12 +211,7 @@ implements UserInterface, PasswordAuthenticatedUserInterface
 
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
-    }
-
-    public function getRoles(): array
-    {
-        return ["ROLE_USER"];
+        return (string)$this->email;
     }
 
     /**
@@ -214,41 +244,6 @@ implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getRole(): ?Role
-    {
-        return $this->role;
-    }
-
-    public function setRole(?Role $role): self
-    {
-        $this->role = $role;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|self[]
-     */
-    public function getFriends(): Collection
-    {
-        return $this->friends;
-    }
-
-    public function addFriend(self $friend): self
-    {
-        if (!$this->friends->contains($friend)) {
-            $this->friends[] = $friend;
-        }
-
-        return $this;
-    }
-
-    public function removeFriend(self $friend): self
-    {
-        $this->friends->removeElement($friend);
-
-        return $this;
-    }
 
     /**
      * @return Collection|BoughtPackage[]
@@ -306,6 +301,82 @@ implements UserInterface, PasswordAuthenticatedUserInterface
                 $usersFestival->setRelatedUser(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Friendship>
+     */
+    public function getFriendships(): Collection
+    {
+        return $this->friendships;
+    }
+
+    public function addFriendship(Friendship $friendship): self
+    {
+        if (!$this->friendships->contains($friendship)) {
+            $this->friendships[] = $friendship;
+            $friendship->setRelatedUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFriendship(Friendship $friendship): self
+    {
+        if ($this->friendships->removeElement($friendship)) {
+            // set the owning side to null (unless already changed)
+            if ($friendship->getRelatedUser() === $this) {
+                $friendship->setRelatedUser(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Friendship>
+     */
+    public function getFriendsWithMe(): Collection
+    {
+        return $this->friendsWithMe;
+    }
+
+    public function addFriendsWithMe(Friendship $friendsWithMe): self
+    {
+        if (!$this->friendsWithMe->contains($friendsWithMe)) {
+            $this->friendsWithMe[] = $friendsWithMe;
+            $friendsWithMe->setFriend($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFriendsWithMe(Friendship $friendsWithMe): self
+    {
+        if ($this->friendsWithMe->removeElement($friendsWithMe)) {
+            // set the owning side to null (unless already changed)
+            if ($friendsWithMe->getFriend() === $this) {
+                $friendsWithMe->setFriend(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
 
         return $this;
     }

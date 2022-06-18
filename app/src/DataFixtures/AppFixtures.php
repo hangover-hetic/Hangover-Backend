@@ -2,16 +2,11 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\BoughtPackage;
-use App\Entity\Festival;
-use App\Entity\OrganisationTeam;
-use App\Entity\Organisator;
-use App\Entity\Post;
 use App\Entity\Role;
-use App\Entity\Screen;
 use App\Entity\User;
 use App\Factory\BoughtPackageFactory;
 use App\Factory\FestivalFactory;
+use App\Factory\FriendshipFactory;
 use App\Factory\LicenceFactory;
 use App\Factory\OrganisationTeamFactory;
 use App\Factory\OrganisatorFactory;
@@ -38,29 +33,20 @@ class AppFixtures extends Fixture
         // $product = new Product();
         // $manager->persist($product);
 
-        $user = new Role();
-        $user->setName("user");
-        $manager->persist($user);
-
-        $admin = new Role();
-        $admin->setName("admin");
-        $manager->persist($admin);
-
-        $roles = [$admin, $user];
 
         $userAdmin = new User();
         $userAdmin->setEmail("admin@hangover.com");
         $userAdmin->setPassword($this->hasher->hashPassword($userAdmin, "password"));
         $userAdmin->setPhone("0698784523");
-        $userAdmin->setRole($user);
+        $userAdmin->setRoles(["ROLE_ADMIN"]);
         $manager->persist($userAdmin);
 
-        UserFactory::createMany(10, function () use ($roles) {
-            return ['role' => $roles[array_rand($roles)]];
+        UserFactory::createMany(20);
+
+        FriendshipFactory::createMany(50, function () {
+            return ["relatedUser" => UserFactory::random(), "friend" => UserFactory::random()];
         });
-        UserFactory::createMany(50, function () use ($roles) {
-            return ['role' => $roles[array_rand($roles)], 'friends' => UserFactory::randomSet(rand(0, 10))];
-        });
+
         OrganisationTeamFactory::createMany(10, function () {
             return ['licence' => LicenceFactory::new()];
         });
@@ -80,8 +66,6 @@ class AppFixtures extends Fixture
         ScreenFactory::createMany(20, function () {
             return ['posts' => PostFactory::new()->many(5, 15), 'template' => ScreenTemplateFactory::random(), 'festival' => FestivalFactory::random()];
         });
-
-
 
 
         UserFestivalFactory::createMany(60, function () {

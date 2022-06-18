@@ -205,6 +205,9 @@
     "stella-maris/clock": {
         "version": "0.1.4"
     },
+    "symfony-bundles/json-request-bundle": {
+        "version": "4.1.2"
+    },
     "symfony/asset": {
         "version": "v6.0.3"
     },
