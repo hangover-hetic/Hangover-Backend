@@ -95,6 +95,7 @@ class User
     private $friendsWithMe;
 
     #[ORM\Column(type: 'array')]
+    #[Groups(["item:user:read"])]
     private $roles = [];
 
     public function __construct()
