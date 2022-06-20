@@ -72,7 +72,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
         ]
     ],
     iri: 'http://schema.org/MediaObject',
-    itemOperations: ['get'],
+    itemOperations: ['get', 'delete'],
     normalizationContext: ['groups' => ['media_object:read']]
 )]
 class Media

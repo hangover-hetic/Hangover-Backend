@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\AddMediaFestivalController;
 use App\Repository\FestivalRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -11,10 +12,44 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: FestivalRepository::class)]
+#[
+    ORM\Entity(repositoryClass: FestivalRepository::class)]
 #[ApiResource(
-    collectionOperations:["get", "post"],
-    itemOperations: ["get" => ["normalization_context" => ['groups' => 'item:festival:read']], "put", "delete"],
+    collectionOperations: ["get", "post"],
+    itemOperations: [
+        "get" => ["normalization_context" => ['groups' => 'item:festival:read']],
+        "put",
+        "delete",
+        "add_media" => [
+            "method" => "PUT",
+            "path" => "/festivals/{id}/add-media",
+            'requirements' => ['id' => '\d+'],
+            'controller' => AddMediaFestivalController::class,
+            'deserialize' => false,
+            'openapi_context' => [
+                "summary" => "Add media to the festival gallery",
+                "content" => [
+                    'application/json' => [
+                        'schema' => [
+                            'type' => 'object',
+                            'properties' =>
+                                [
+                                    'media' => ['type' => 'string']
+                                ],
+                        ],
+                    ],
+                ],
+                "parameters" => [
+                    [
+                        "name" => "media",
+                        "in" => "body",
+                        "type" => "iri"
+                    ]
+                ]
+
+            ],
+
+        ]],
     normalizationContext: ["groups" => ["festival:read"]]
 )]
 class Festival
@@ -87,7 +122,7 @@ class Festival
 
     #[ORM\ManyToMany(targetEntity: Media::class)]
     #[ApiProperty(iri: 'http://schema.org/image')]
-    #[Groups(["festival:read",'item:festival:read'])]
+    #[Groups(["festival:read", 'item:festival:read'])]
     private $gallery;
 
     public function __construct()
