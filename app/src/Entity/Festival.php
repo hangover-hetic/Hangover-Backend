@@ -149,12 +149,15 @@ class Festival
     private $gallery;
 
     #[ORM\ManyToMany(targetEntity: ScreenTemplate::class, inversedBy: 'festivals')]
+    #[Groups(['item:festival:read'])]
     private $screenTemplates;
 
     #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Media::class, orphanRemoval: true)]
+    #[Groups(['item:festival:read'])]
     private $posts;
 
     #[ORM\ManyToOne(targetEntity: Media::class)]
+    #[Groups(["festival:read",'item:festival:read'])]
     private $cover;
 
     public function __construct()
