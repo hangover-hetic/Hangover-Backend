@@ -2,7 +2,7 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Role;
+use App\Entity\Media;
 use App\Entity\User;
 use App\Factory\BoughtPackageFactory;
 use App\Factory\FestivalFactory;
@@ -12,16 +12,18 @@ use App\Factory\OrganisationTeamFactory;
 use App\Factory\OrganisatorFactory;
 use App\Factory\PackageFactory;
 use App\Factory\PostFactory;
-use App\Factory\ScreenFactory;
 use App\Factory\ScreenTemplateFactory;
 use App\Factory\UserFactory;
-use App\Factory\UserFestivalFactory;
+use App\Factory\InscriptionFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
+
+    private UserPasswordHasherInterface $hasher;
 
     public function __construct(UserPasswordHasherInterface $hasher)
     {
@@ -55,20 +57,16 @@ class AppFixtures extends Fixture
                 return ['relatedUser' => UserFactory::random(), 'organisationTeam' => OrganisationTeamFactory::random()];
             });
 
+        ScreenTemplateFactory::createMany(5);
+
         FestivalFactory::createMany(10, function () {
             return [
-                'organisationTeam' => OrganisationTeamFactory::random()
+                'organisationTeam' => OrganisationTeamFactory::random(),
+                "screenTemplates" => ScreenTemplateFactory::randomRange(1, 3),
             ];
         });
 
-        ScreenTemplateFactory::createMany(5);
-
-        ScreenFactory::createMany(20, function () {
-            return ['posts' => PostFactory::new()->many(5, 15), 'template' => ScreenTemplateFactory::random(), 'festival' => FestivalFactory::random()];
-        });
-
-
-        UserFestivalFactory::createMany(60, function () {
+        InscriptionFactory::createMany(60, function () {
             return ['festival' => FestivalFactory::random(), 'relatedUser' => UserFactory::random()];
         });
 

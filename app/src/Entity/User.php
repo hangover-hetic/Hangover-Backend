@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\CreateUserController;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -21,7 +22,9 @@ use Symfony\Component\Validator\Constraints as Assert;
                 "groups" => ["collection:user:read"]
             ]
         ],
-        "post"
+        "post" => [
+            "controller" => CreateUserController::class
+        ]
     ],
     itemOperations: [
         "get" => [
@@ -82,9 +85,9 @@ class User
     #[Groups(["item:user:read"])]
     private $boughtPackages;
 
-    #[ORM\OneToMany(mappedBy: 'relatedUser', targetEntity: UserFestival::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'relatedUser', targetEntity: Inscription::class, orphanRemoval: true)]
     #[Groups(["user:read", "item:user:read"])]
-    private $usersFestival;
+    private $inscription;
 
     #[ORM\OneToMany(mappedBy: 'relatedUser', targetEntity: Friendship::class, orphanRemoval: true)]
     #[Groups(["item:user:read"])]
@@ -98,14 +101,18 @@ class User
     #[Groups(["item:user:read"])]
     private $roles = [];
 
+    #[ORM\OneToMany(mappedBy: 'relatedUser', targetEntity: Post::class, orphanRemoval: true)]
+    private $posts;
+
     public function __construct()
     {
         $this->organisators = new ArrayCollection();
         $this->boughtPackages = new ArrayCollection();
-        $this->usersFestival = new ArrayCollection();
+        $this->inscription = new ArrayCollection();
         $this->friendships = new ArrayCollection();
         $this->friendsWithMe = new ArrayCollection();
         $this->roles = [];
+        $this->posts = new ArrayCollection();
     }
 
 
@@ -277,26 +284,26 @@ class User
     }
 
     /**
-     * @return Collection|UserFestival[]
+     * @return Collection|Inscription[]
      */
-    public function getUsersFestival(): Collection
+    public function getInscription(): Collection
     {
-        return $this->usersFestival;
+        return $this->inscription;
     }
 
-    public function addUsersFestival(UserFestival $usersFestival): self
+    public function addUsersFestival(Inscription $usersFestival): self
     {
-        if (!$this->usersFestival->contains($usersFestival)) {
-            $this->usersFestival[] = $usersFestival;
+        if (!$this->inscription->contains($usersFestival)) {
+            $this->inscription[] = $usersFestival;
             $usersFestival->setRelatedUser($this);
         }
 
         return $this;
     }
 
-    public function removeUsersFestival(UserFestival $usersFestival): self
+    public function removeUsersFestival(Inscription $usersFestival): self
     {
-        if ($this->usersFestival->removeElement($usersFestival)) {
+        if ($this->inscription->removeElement($usersFestival)) {
             // set the owning side to null (unless already changed)
             if ($usersFestival->getRelatedUser() === $this) {
                 $usersFestival->setRelatedUser(null);
@@ -378,6 +385,36 @@ class User
     public function setRoles(array $roles): self
     {
         $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Post>
+     */
+    public function getPosts(): Collection
+    {
+        return $this->posts;
+    }
+
+    public function addPost(Post $post): self
+    {
+        if (!$this->posts->contains($post)) {
+            $this->posts[] = $post;
+            $post->setRelatedUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removePost(Post $post): self
+    {
+        if ($this->posts->removeElement($post)) {
+            // set the owning side to null (unless already changed)
+            if ($post->getRelatedUser() === $this) {
+                $post->setRelatedUser(null);
+            }
+        }
 
         return $this;
     }

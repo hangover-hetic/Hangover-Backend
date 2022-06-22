@@ -13,3 +13,6 @@
 /config/jwt/*.pem
 ###< lexik/jwt-authentication-bundle ###
 templates/
+
+
+public/media/

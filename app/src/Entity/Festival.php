@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\AddMediaFestivalController;
+use App\Controller\AddPostFestivalController;
 use App\Repository\FestivalRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -49,7 +50,33 @@ use Symfony\Component\Validator\Constraints as Assert;
 
             ],
 
-        ]],
+        ],
+        "add_post" => [
+            "method" => "POST",
+            'path' => '/festivals/{id}/add-post',
+            'requirements' => ['id' => '\d+'],
+            'controller' => AddPostFestivalController::class,
+            'deserialize' => false,
+            'openapi_context' => [
+                "summary" => "Upload a post and assign it to a festival",
+                'requestBody' => [
+                    'content' => [
+                        'multipart/form-data' => [
+                            'schema' => [
+                                'type' => 'object',
+                                'properties' => [
+                                    'media' => [
+                                        'type' => 'string',
+                                        'format' => 'binary',
+                                    ],
+                                ],
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ]
+    ],
     normalizationContext: ["groups" => ["festival:read"]]
 )]
 class Festival
@@ -112,26 +139,32 @@ class Festival
     #[Groups(['item:festival:read'])]
     private $packages;
 
-    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Screen::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Inscription::class, orphanRemoval: true)]
     #[Groups(['item:festival:read'])]
-    private $screens;
-
-    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: UserFestival::class, orphanRemoval: true)]
-    #[Groups(['item:festival:read'])]
-    private $usersFestival;
+    private $inscriptions;
 
     #[ORM\ManyToMany(targetEntity: Media::class)]
     #[ApiProperty(iri: 'http://schema.org/image')]
     #[Groups(["festival:read", 'item:festival:read'])]
     private $gallery;
 
+    #[ORM\ManyToMany(targetEntity: ScreenTemplate::class, inversedBy: 'festivals')]
+    private $screenTemplates;
+
+    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Media::class, orphanRemoval: true)]
+    private $posts;
+
+    #[ORM\ManyToOne(targetEntity: Media::class)]
+    private $cover;
+
     public function __construct()
     {
         $this->packages = new ArrayCollection();
-        $this->screens = new ArrayCollection();
-        $this->usersFestival = new ArrayCollection();
+        $this->inscriptions = new ArrayCollection();
         $this->status = Festival::STATUS_DRAFT;
         $this->gallery = new ArrayCollection();
+        $this->screenTemplates = new ArrayCollection();
+        $this->posts = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -265,57 +298,28 @@ class Festival
         return $this;
     }
 
-    /**
-     * @return Collection|Screen[]
-     */
-    public function getScreens(): Collection
-    {
-        return $this->screens;
-    }
-
-    public function addScreen(Screen $screen): self
-    {
-        if (!$this->screens->contains($screen)) {
-            $this->screens[] = $screen;
-            $screen->setFestival($this);
-        }
-
-        return $this;
-    }
-
-    public function removeScreen(Screen $screen): self
-    {
-        if ($this->screens->removeElement($screen)) {
-            // set the owning side to null (unless already changed)
-            if ($screen->getFestival() === $this) {
-                $screen->setFestival(null);
-            }
-        }
-
-        return $this;
-    }
 
     /**
-     * @return Collection|UserFestival[]
+     * @return Collection|Inscription[]
      */
-    public function getUsersFestival(): Collection
+    public function getInscriptions(): Collection
     {
-        return $this->usersFestival;
+        return $this->inscriptions;
     }
 
-    public function addUsersFestival(UserFestival $usersFestival): self
+    public function addUsersFestival(Inscription $usersFestival): self
     {
-        if (!$this->usersFestival->contains($usersFestival)) {
-            $this->usersFestival[] = $usersFestival;
+        if (!$this->inscriptions->contains($usersFestival)) {
+            $this->inscriptions[] = $usersFestival;
             $usersFestival->setFestival($this);
         }
 
         return $this;
     }
 
-    public function removeUsersFestival(UserFestival $usersFestival): self
+    public function removeUsersFestival(Inscription $usersFestival): self
     {
-        if ($this->usersFestival->removeElement($usersFestival)) {
+        if ($this->inscriptions->removeElement($usersFestival)) {
             // set the owning side to null (unless already changed)
             if ($usersFestival->getFestival() === $this) {
                 $usersFestival->setFestival(null);
@@ -357,6 +361,72 @@ class Festival
     public function removeGallery(Media $gallery): self
     {
         $this->gallery->removeElement($gallery);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ScreenTemplate>
+     */
+    public function getScreenTemplates(): Collection
+    {
+        return $this->screenTemplates;
+    }
+
+    public function addScreenTemplate(ScreenTemplate $screenTemplate): self
+    {
+        if (!$this->screenTemplates->contains($screenTemplate)) {
+            $this->screenTemplates[] = $screenTemplate;
+        }
+
+        return $this;
+    }
+
+    public function removeScreenTemplate(ScreenTemplate $screenTemplate): self
+    {
+        $this->screenTemplates->removeElement($screenTemplate);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Post>
+     */
+    public function getPosts(): Collection
+    {
+        return $this->posts;
+    }
+
+    public function addPost(Post $post): self
+    {
+        if (!$this->posts->contains($post)) {
+            $this->posts[] = $post;
+            $post->setFestival($this);
+        }
+
+        return $this;
+    }
+
+    public function removePost(Post $post): self
+    {
+        if ($this->posts->removeElement($post)) {
+            // set the owning side to null (unless already changed)
+            if ($post->getFestival() === $this) {
+                $post->setFestival(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCover(): ?Media
+    {
+        return $this->cover;
+    }
+
+    public function setCover(?Media $cover): self
+    {
+        $this->cover = $cover;
 
         return $this;
     }

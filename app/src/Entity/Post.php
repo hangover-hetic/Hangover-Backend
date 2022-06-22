@@ -17,39 +17,58 @@ class Post
     #[ORM\Column(type: 'integer')]
     private int $id;
 
-    #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Assert\Url]
-    private string $image;
 
-    #[ORM\ManyToOne(targetEntity: Screen::class, inversedBy: 'posts')]
+    #[ORM\ManyToOne(targetEntity: Festival::class, inversedBy: 'posts')]
     #[ORM\JoinColumn(nullable: false)]
-    private $screen;
+    private $festival;
+
+    #[ORM\ManyToOne(targetEntity: Media::class)]
+    #[ORM\JoinColumn(nullable: false)]
+    private $media;
+
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'posts')]
+    #[ORM\JoinColumn(nullable: false)]
+    private $relatedUser;
+
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getImage(): ?string
+
+    public function getFestival(): ?Festival
     {
-        return $this->image;
+        return $this->festival;
     }
 
-    public function setImage(?string $image): self
+    public function setFestival(?Festival $festival): self
     {
-        $this->image = $image;
+        $this->festival = $festival;
 
         return $this;
     }
 
-    public function getScreen(): ?Screen
+    public function getMedia(): ?Media
     {
-        return $this->screen;
+        return $this->media;
     }
 
-    public function setScreen(?Screen $screen): self
+    public function setMedia(?Media $media): self
     {
-        $this->screen = $screen;
+        $this->media = $media;
+
+        return $this;
+    }
+
+    public function getRelatedUser(): ?User
+    {
+        return $this->relatedUser;
+    }
+
+    public function setRelatedUser(?User $relatedUser): self
+    {
+        $this->relatedUser = $relatedUser;
 
         return $this;
     }

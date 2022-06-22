@@ -21,12 +21,15 @@ class ScreenTemplate
     #[Assert\Length(min: 1)]
     private string $name;
 
-    #[ORM\OneToMany(mappedBy: 'template', targetEntity: Screen::class)]
-    private $screens;
+    #[ORM\ManyToMany(targetEntity: Festival::class, mappedBy: 'screenTemplates')]
+    private $festivals;
+
+    #[ORM\Column(type: 'json', nullable: true)]
+    private $disposition = [];
 
     public function __construct()
     {
-        $this->screens = new ArrayCollection();
+        $this->festivals = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -47,32 +50,43 @@ class ScreenTemplate
     }
 
     /**
-     * @return Collection|Screen[]
+     * @return Collection<int, Festival>
      */
-    public function getScreens(): Collection
+    public function getFestivals(): Collection
     {
-        return $this->screens;
+        return $this->festivals;
     }
 
-    public function addScreen(Screen $screen): self
+    public function addFestival(Festival $festival): self
     {
-        if (!$this->screens->contains($screen)) {
-            $this->screens[] = $screen;
-            $screen->setTemplate($this);
+        if (!$this->festivals->contains($festival)) {
+            $this->festivals[] = $festival;
+            $festival->addScreenTemplate($this);
         }
 
         return $this;
     }
 
-    public function removeScreen(Screen $screen): self
+    public function removeFestival(Festival $festival): self
     {
-        if ($this->screens->removeElement($screen)) {
-            // set the owning side to null (unless already changed)
-            if ($screen->getTemplate() === $this) {
-                $screen->setTemplate(null);
-            }
+        if ($this->festivals->removeElement($festival)) {
+            $festival->removeScreenTemplate($this);
         }
 
         return $this;
     }
+
+    public function getDisposition(): ?array
+    {
+        return $this->disposition;
+    }
+
+    public function setDisposition(?array $disposition): self
+    {
+        $this->disposition = $disposition;
+
+        return $this;
+    }
+
+
 }

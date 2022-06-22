@@ -2,25 +2,25 @@
 
 namespace App\Repository;
 
-use App\Entity\UserFestival;
+use App\Entity\Inscription;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @method UserFestival|null find($id, $lockMode = null, $lockVersion = null)
- * @method UserFestival|null findOneBy(array $criteria, array $orderBy = null)
- * @method UserFestival[]    findAll()
- * @method UserFestival[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Inscription|null find($id, $lockMode = null, $lockVersion = null)
+ * @method Inscription|null findOneBy(array $criteria, array $orderBy = null)
+ * @method Inscription[]    findAll()
+ * @method Inscription[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class UserFestivalRepository extends ServiceEntityRepository
+class InscriptionRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, UserFestival::class);
+        parent::__construct($registry, Inscription::class);
     }
 
     // /**
-    //  * @return UserFestival[] Returns an array of UserFestival objects
+    //  * @return Inscription[] Returns an array of UserFestival objects
     //  */
     /*
     public function findByExampleField($value)
@@ -37,7 +37,7 @@ class UserFestivalRepository extends ServiceEntityRepository
     */
 
     /*
-    public function findOneBySomeField($value): ?UserFestival
+    public function findOneBySomeField($value): ?Inscription
     {
         return $this->createQueryBuilder('u')
             ->andWhere('u.exampleField = :val')

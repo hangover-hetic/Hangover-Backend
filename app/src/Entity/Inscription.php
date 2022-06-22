@@ -3,14 +3,14 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\UserFestivalRepository;
+use App\Repository\InscriptionRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[ORM\Entity(repositoryClass: UserFestivalRepository::class)]
+#[ORM\Entity(repositoryClass: InscriptionRepository::class)]
 #[ApiResource]
-class UserFestival
+class Inscription
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
