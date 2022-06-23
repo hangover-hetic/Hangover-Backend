@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\AddMediaFestivalController;
 use App\Controller\AddPostFestivalController;
+use App\Controller\GetFestivalPostsController;
 use App\Repository\FestivalRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -18,7 +19,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ApiResource(
     collectionOperations: ["get", "post"],
     itemOperations: [
-        "get" => ["normalization_context" => ['groups' => 'item:festival:read']],
+        "get" => ["normalization_context" => ['groups' => ['item:festival:read']]],
         "put",
         "delete",
         "add_media" => [
@@ -27,6 +28,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             'requirements' => ['id' => '\d+'],
             'controller' => AddMediaFestivalController::class,
             'deserialize' => false,
+
             'openapi_context' => [
                 "summary" => "Add media to the festival gallery",
                 "content" => [
@@ -53,10 +55,11 @@ use Symfony\Component\Validator\Constraints as Assert;
         ],
         "add_post" => [
             "method" => "POST",
-            'path' => '/festivals/{id}/add-post',
+            'path' => '/festivals/{id}/posts',
             'requirements' => ['id' => '\d+'],
             'controller' => AddPostFestivalController::class,
             'deserialize' => false,
+            "normalization_context" => ['groups' => ['post:read']],
             'openapi_context' => [
                 "summary" => "Upload a post and assign it to a festival",
                 'requestBody' => [
@@ -93,71 +96,70 @@ class Festival
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(["festival:read", 'item:festival:read'])]
+    #[Groups(["festival:read", 'item:festival:read', 'admin:read'])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotNull]
-    #[Groups(["festival:read", 'item:festival:read'])]
+    #[Groups(["festival:read", 'item:festival:read', 'admin:read'])]
     private ?string $name;
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotNull]
-    #[Groups(["festival:read", 'item:festival:read'])]
+    #[Groups(["festival:read", 'item:festival:read', 'admin:read'])]
     private ?string $description;
 
     #[ORM\Column(type: 'datetime')]
-    #[Groups(["festival:read", 'item:festival:read'])]
+    #[Groups(["festival:read", 'item:festival:read', 'admin:read'])]
     private ?\DateTimeInterface $start_date;
 
     #[ORM\Column(type: 'datetime')]
-    #[Groups(["festival:read", 'item:festival:read'])]
+    #[Groups(["festival:read", 'item:festival:read', 'admin:read'])]
     private ?\DateTimeInterface $end_date;
 
     #[ORM\Column(type: 'json')]
-    #[Groups(['item:festival:read', 'item:festival:read'])]
+    #[Groups(['item:festival:read', 'item:festival:read', 'admin:read'])]
     private ?array $programmation = [];
 
     #[ORM\Column(type: 'string', length: 20, nullable: true)]
     #[Assert\Choice(choices: Festival::STATUS, message: 'Choose a valid status : DRAFT, PUBLISHED, VALIDATED')]
-    #[Groups(["festival:read", 'item:festival:read'])]
+    #[Groups(["festival:read", 'admin:read'])]
     private ?string $status;
 
     #[ORM\Column(type: 'json')]
-    #[Groups(['item:festival:read', 'item:festival:read'])]
+    #[Groups(['item:festival:read', 'item:festival:read', 'admin:read'])]
     private ?array $map = [];
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["festival:read", 'item:festival:read'])]
+    #[Groups(["festival:read", 'item:festival:read', 'admin:read'])]
     private ?string $location;
 
     #[ORM\ManyToOne(targetEntity: OrganisationTeam::class, inversedBy: 'packages')]
-    #[Groups(["festival:read", 'item:festival:read'])]
+    #[Groups(["festival:read", 'admin:read'])]
     private $organisationTeam;
 
     #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Package::class, orphanRemoval: true)]
-    #[Groups(['item:festival:read'])]
+    #[Groups(['item:festival:read', 'admin:read'])]
     private $packages;
 
     #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Inscription::class, orphanRemoval: true)]
-    #[Groups(['item:festival:read'])]
+    #[Groups(['admin:read'])]
     private $inscriptions;
 
     #[ORM\ManyToMany(targetEntity: Media::class)]
     #[ApiProperty(iri: 'http://schema.org/image')]
-    #[Groups(["festival:read", 'item:festival:read'])]
+    #[Groups(["festival:read", 'item:festival:read', 'admin:read'])]
     private $gallery;
 
     #[ORM\ManyToMany(targetEntity: ScreenTemplate::class, inversedBy: 'festivals')]
-    #[Groups(['item:festival:read'])]
+    #[Groups(['admin:read'])]
     private $screenTemplates;
 
-    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Media::class, orphanRemoval: true)]
-    #[Groups(['item:festival:read'])]
+    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Post::class, orphanRemoval: true)]
     private $posts;
 
     #[ORM\ManyToOne(targetEntity: Media::class)]
-    #[Groups(["festival:read",'item:festival:read'])]
+    #[Groups(["festival:read", 'item:festival:read', 'admin:read'])]
     private $cover;
 
     public function __construct()
