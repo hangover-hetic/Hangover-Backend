@@ -26,6 +26,7 @@ final class AdminContextBuilder implements SerializerContextBuilderInterface
     {
         $context = $this->decorated->createFromRequest($request, $normalization, $extractedAttributes);
         $resourceClass = $context['resource_class'] ?? null;
+
         // Add `admin:read` for normalization requests
         // Otherwise, add `admin:write` for denormalization requests
         if (in_array($resourceClass, self::CLASSES_NEED_ADMIN) && $this->authorizationChecker->isGranted('ROLE_ADMIN')) {

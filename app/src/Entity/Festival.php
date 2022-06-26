@@ -14,16 +14,23 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-#[
-    ORM\Entity(repositoryClass: FestivalRepository::class)]
+#[ORM\Entity(repositoryClass: FestivalRepository::class)]
 #[ApiResource(
     collectionOperations: ["get", "post"],
     itemOperations: [
         "get" => ["normalization_context" => ['groups' => ['item:festival:read']]],
-        "put",
-        "delete",
+        "put" => [
+            "security" => "is_granted('FESTIVAL_ADMIN', object)",
+            "security_message" => "You must be on the festival organisation team or admin.",
+        ],
+        "delete" => [
+            "security" => "is_granted('FESTIVAL_ADMIN', object)",
+            "security_message" => "You must be on the festival organisation team or admin."
+        ],
         "add_media" => [
             "method" => "PUT",
+            "security" => "is_granted('FESTIVAL_ADMIN', object)",
+            "security_message" => "You must be on the festival organisation team or admin.",
             "path" => "/festivals/{id}/add-media",
             'requirements' => ['id' => '\d+'],
             'controller' => AddMediaFestivalController::class,
@@ -80,6 +87,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             ],
         ]
     ],
+    denormalizationContext: ['groups' => ['festival:write']],
     normalizationContext: ["groups" => ["festival:read"]]
 )]
 class Festival
@@ -101,65 +109,67 @@ class Festival
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotNull]
-    #[Groups(["festival:read", 'item:festival:read', 'admin:read'])]
+    #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write'])]
     private ?string $name;
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotNull]
-    #[Groups(["festival:read", 'item:festival:read', 'admin:read'])]
+    #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write'])]
     private ?string $description;
 
     #[ORM\Column(type: 'datetime')]
-    #[Groups(["festival:read", 'item:festival:read', 'admin:read'])]
-    private ?\DateTimeInterface $start_date;
+    #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write'])]
+    private ?\DateTimeInterface $startDate;
 
     #[ORM\Column(type: 'datetime')]
-    #[Groups(["festival:read", 'item:festival:read', 'admin:read'])]
-    private ?\DateTimeInterface $end_date;
+    #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write'])]
+    private ?\DateTimeInterface $endDate;
 
     #[ORM\Column(type: 'json')]
-    #[Groups(['item:festival:read', 'item:festival:read', 'admin:read'])]
+    #[Groups(['item:festival:read', 'admin:read', 'festival:write'])]
     private ?array $programmation = [];
 
     #[ORM\Column(type: 'string', length: 20, nullable: true)]
     #[Assert\Choice(choices: Festival::STATUS, message: 'Choose a valid status : DRAFT, PUBLISHED, VALIDATED')]
-    #[Groups(["festival:read", 'admin:read'])]
+    #[Groups(["festival:read", 'festival:write'])]
+    #[ApiProperty(security: "is_granted('FESTIVAL_ADMIN', object)")]
     private ?string $status;
 
     #[ORM\Column(type: 'json')]
-    #[Groups(['item:festival:read', 'item:festival:read', 'admin:read'])]
+    #[Groups(['item:festival:read', 'item:festival:read', 'admin:read', 'festival:write'])]
     private ?array $map = [];
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["festival:read", 'item:festival:read', 'admin:read'])]
+    #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write'])]
     private ?string $location;
 
-    #[ORM\ManyToOne(targetEntity: OrganisationTeam::class, inversedBy: 'packages')]
-    #[Groups(["festival:read", 'admin:read'])]
+    #[ORM\ManyToOne(targetEntity: OrganisationTeam::class, inversedBy: 'festivals')]
+    #[Groups(["festival:read", 'admin:read', 'festival:write'])]
+    #[Assert\NotBlank(message: "A festival must have an organisationTeam")]
     private $organisationTeam;
 
     #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Package::class, orphanRemoval: true)]
-    #[Groups(['item:festival:read', 'admin:read'])]
+    #[Groups(['item:festival:read', 'admin:read', 'festival:write'])]
     private $packages;
 
     #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Inscription::class, orphanRemoval: true)]
-    #[Groups(['admin:read'])]
+    #[Groups(['admin:read', 'festival:write'])]
     private $inscriptions;
 
     #[ORM\ManyToMany(targetEntity: Media::class)]
     #[ApiProperty(iri: 'http://schema.org/image')]
-    #[Groups(["festival:read", 'item:festival:read', 'admin:read'])]
+    #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write'])]
     private $gallery;
 
     #[ORM\ManyToMany(targetEntity: ScreenTemplate::class, inversedBy: 'festivals')]
-    #[Groups(['admin:read'])]
+    #[Groups(['admin:read', 'festival:write'])]
     private $screenTemplates;
 
     #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Post::class, orphanRemoval: true)]
     private $posts;
 
     #[ORM\ManyToOne(targetEntity: Media::class)]
-    #[Groups(["festival:read", 'item:festival:read', 'admin:read'])]
+    #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write'])]
     private $cover;
 
     public function __construct()
@@ -203,24 +213,24 @@ class Festival
 
     public function getStartDate(): ?\DateTimeInterface
     {
-        return $this->start_date;
+        return $this->startDate;
     }
 
-    public function setStartDate(\DateTimeInterface $start_date): self
+    public function setStartDate(\DateTimeInterface $startDate): self
     {
-        $this->start_date = $start_date;
+        $this->startDate = $startDate;
 
         return $this;
     }
 
     public function getEndDate(): ?\DateTimeInterface
     {
-        return $this->end_date;
+        return $this->endDate;
     }
 
-    public function setEndDate(\DateTimeInterface $end_date): self
+    public function setEndDate(\DateTimeInterface $endDate): self
     {
-        $this->end_date = $end_date;
+        $this->endDate = $endDate;
 
         return $this;
     }

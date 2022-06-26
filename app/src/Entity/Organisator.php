@@ -8,7 +8,12 @@ use Doctrine\ORM\Mapping as ORM;
 
 use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: OrganisatorRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    collectionOperations: [
+        "get",
+        "post",
+    ]
+)]
 class Organisator
 {
     #[ORM\Id]
@@ -20,7 +25,7 @@ class Organisator
     private bool $isAdministrator;
 
     #[ORM\ManyToOne(targetEntity: OrganisationTeam::class, inversedBy: 'organisators')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private $organisationTeam;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'organisators')]

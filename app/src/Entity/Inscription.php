@@ -24,10 +24,10 @@ class Inscription
     #[ORM\Column(type: 'json', nullable: true)]
     private $agenda = [];
 
-    #[ORM\ManyToOne(targetEntity: Festival::class, inversedBy: 'usersFestival')]
+    #[ORM\ManyToOne(targetEntity: Festival::class, inversedBy: 'inscriptions')]
     private $festival;
 
-    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'usersFestival')]
+    #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'inscriptions')]
     #[ORM\JoinColumn(nullable: false)]
     private $relatedUser;
 

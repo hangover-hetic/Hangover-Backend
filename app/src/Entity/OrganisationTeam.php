@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\CreateOrganisationTeamController;
 use App\Repository\OrganisationTeamRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -11,7 +12,14 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: OrganisationTeamRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    collectionOperations: [
+        "get",
+        "post" => [
+            "controller" => CreateOrganisationTeamController::class
+        ]
+    ]
+)]
 class OrganisationTeam
 {
     #[ORM\Id]
@@ -110,7 +118,7 @@ class OrganisationTeam
     /**
      * @return Collection|Festival[]
      */
-    public function getFestival(): Collection
+    public function getFestivals(): Collection
     {
         return $this->festivals;
     }

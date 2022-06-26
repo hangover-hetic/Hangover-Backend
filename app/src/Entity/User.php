@@ -88,7 +88,7 @@ class User
 
     #[ORM\OneToMany(mappedBy: 'relatedUser', targetEntity: Inscription::class, orphanRemoval: true)]
     #[Groups(["user:read", "item:user:read"])]
-    private $inscription;
+    private $inscriptions;
 
     #[ORM\OneToMany(mappedBy: 'relatedUser', targetEntity: Friendship::class, orphanRemoval: true)]
     #[Groups(["item:user:read"])]
@@ -109,7 +109,7 @@ class User
     {
         $this->organisators = new ArrayCollection();
         $this->boughtPackages = new ArrayCollection();
-        $this->inscription = new ArrayCollection();
+        $this->inscriptions = new ArrayCollection();
         $this->friendships = new ArrayCollection();
         $this->friendsWithMe = new ArrayCollection();
         $this->roles = [];
@@ -287,15 +287,15 @@ class User
     /**
      * @return Collection|Inscription[]
      */
-    public function getInscription(): Collection
+    public function getInscriptions(): Collection
     {
-        return $this->inscription;
+        return $this->inscriptions;
     }
 
     public function addUsersFestival(Inscription $usersFestival): self
     {
-        if (!$this->inscription->contains($usersFestival)) {
-            $this->inscription[] = $usersFestival;
+        if (!$this->inscriptions->contains($usersFestival)) {
+            $this->inscriptions[] = $usersFestival;
             $usersFestival->setRelatedUser($this);
         }
 
@@ -304,7 +304,7 @@ class User
 
     public function removeUsersFestival(Inscription $usersFestival): self
     {
-        if ($this->inscription->removeElement($usersFestival)) {
+        if ($this->inscriptions->removeElement($usersFestival)) {
             // set the owning side to null (unless already changed)
             if ($usersFestival->getRelatedUser() === $this) {
                 $usersFestival->setRelatedUser(null);
