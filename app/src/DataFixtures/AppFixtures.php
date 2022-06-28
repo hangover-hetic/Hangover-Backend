@@ -50,12 +50,10 @@ class AppFixtures extends Fixture
         });
 
         OrganisationTeamFactory::createMany(10, function () {
-            return ['licence' => LicenceFactory::new()];
+            return ['licence' => LicenceFactory::new(), 'organisators' => OrganisatorFactory::new()->many(2)->create(function () {
+                return ["relatedUser" => UserFactory::random()];
+            })];
         });
-        OrganisatorFactory::createMany(50,
-            function () {
-                return ['relatedUser' => UserFactory::random(), 'organisationTeam' => OrganisationTeamFactory::random()];
-            });
 
         ScreenTemplateFactory::createMany(5);
 

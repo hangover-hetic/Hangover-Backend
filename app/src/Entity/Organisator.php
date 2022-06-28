@@ -7,6 +7,7 @@ use App\Repository\OrganisatorRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 use Symfony\Component\Validator\Constraints as Assert;
+
 #[ORM\Entity(repositoryClass: OrganisatorRepository::class)]
 #[ApiResource(
     collectionOperations: [
@@ -34,7 +35,7 @@ class Organisator
 
     public function __construct()
     {
-        $this->isAdministrator = true;
+        $this->isAdministrator = false;
     }
 
 

@@ -2,7 +2,9 @@
 
 namespace App\Security;
 
-enum Roles: string
+final class Roles
 {
-    case ADMIN = "ROLE_ADMIN";
+    public static string $ADMIN = "ROLE_ADMIN";
+    public static string $ORGANISATOR = "ROLE_ORGANISATOR";
+    public static string $USER = "ROLE_USER";
 }

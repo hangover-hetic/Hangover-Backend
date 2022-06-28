@@ -2,9 +2,11 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Controller\CreateUserController;
+use App\Controller\HashPasswordController;
 use App\Repository\UserRepository;
+use App\Security\Roles;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -21,26 +23,36 @@ use Symfony\Component\Validator\Constraints as Assert;
         "get" => [
             "normalization_context" => [
                 "groups" => ["collection:user:read"]
-            ]
+            ],
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "You must be administrator."
         ],
         "post" => [
-            "controller" => CreateUserController::class
+            "controller" => HashPasswordController::class
         ]
     ],
     itemOperations: [
         "get" => [
             "normalization_context" => [
                 "groups" => ["item:user:read"]
-            ]
+            ],
+            "security" => "is_granted('USER_ADMIN', object)",
         ],
-        "put",
-        "delete"
-    ], normalizationContext: ["groups" => ["user:read"]]
+        "put" => [
+            "security" => "is_granted('USER_ADMIN', object)",
+            "controller" => HashPasswordController::class,
+        ],
+        "delete" => [
+            "security" => "is_granted('USER_ADMIN', object)",
+        ]
+    ],
+    denormalizationContext: ["groups" => ["user:write"]],
+    normalizationContext: ["groups" => ["user:read"]]
 )]
 #[UniqueEntity('email')]
-class User
-    implements UserInterface, PasswordAuthenticatedUserInterface
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -48,61 +60,64 @@ class User
     private int $id;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["friendship:read", "user:read", "collection:user:read", "item:user:read"])]
+    #[Groups(["friendship:read", "user:read", "collection:user:read", "item:user:read", "user:write"])]
     private string $firstName;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["friendship:read", "user:read", "collection:user:read", "item:user:read"])]
+    #[Groups(["friendship:read", "user:read", "collection:user:read", "item:user:read", "user:write"])]
     private string $lastName;
 
     #[ORM\Column(type: 'string', length: 255, unique: true)]
-    #[Groups(["user:read", "collection:user:read", "item:user:read"])]
+    #[Groups(["user:read", "collection:user:read", "item:user:read", "user:write"])]
     private string $email;
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\Length(min: 6)]
+    #[Groups(["user:write"])]
     private string $password;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Assert\Regex('/^(?:0|\s?)[1-79](?:[\.\-\s]?\d\d){4}$/')]
-    #[Groups(["user:read", "item:user:read"])]
+    #[Groups(["user:read", "item:user:read", "user:write"])]
     private string $phone;
 
     #[ORM\Column(type: 'text', nullable: true)]
     #[Assert\Length(min: 6)]
-    #[Groups(["user:read", "item:user:read"])]
+    #[Groups(["user:read", "item:user:read", "user:write"])]
     private string $address;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Assert\Length(min: 6)]
-    #[Groups(["user:read", "item:user:read"])]
+    #[Groups(["user:read", "item:user:read", "user:write"])]
     private string $country;
 
     #[ORM\OneToMany(mappedBy: 'relatedUser', targetEntity: Organisator::class)]
-    #[Groups(["item:user:read"])]
+    #[Groups(["item:user:read", "user:write"])]
     private $organisators;
 
     #[ORM\OneToMany(mappedBy: 'relatedUser', targetEntity: BoughtPackage::class, orphanRemoval: true)]
-    #[Groups(["item:user:read"])]
+    #[Groups(["item:user:read", "user:write"])]
     private $boughtPackages;
 
     #[ORM\OneToMany(mappedBy: 'relatedUser', targetEntity: Inscription::class, orphanRemoval: true)]
-    #[Groups(["user:read", "item:user:read"])]
+    #[Groups(["user:read", "item:user:read", "user:write"])]
     private $inscriptions;
 
     #[ORM\OneToMany(mappedBy: 'relatedUser', targetEntity: Friendship::class, orphanRemoval: true)]
-    #[Groups(["item:user:read"])]
+    #[Groups(["item:user:read", "user:write"])]
     private $friendships;
 
     #[ORM\OneToMany(mappedBy: 'friend', targetEntity: Friendship::class, orphanRemoval: true)]
-    #[Groups(["item:user:read"])]
+    #[Groups(["item:user:read", "user:write"])]
     private $friendsWithMe;
 
     #[ORM\Column(type: 'array')]
-    #[Groups(["item:user:read"])]
+    #[Groups(["item:user:read", "user:write"])]
+    #[ApiProperty(security: "is_granted('ROLE_ADMIN')")]
     private $roles = [];
 
     #[ORM\OneToMany(mappedBy: 'relatedUser', targetEntity: Post::class, orphanRemoval: true)]
+    #[Groups(["user:write"])]
     private $posts;
 
     public function __construct()
@@ -390,6 +405,12 @@ class User
         return $this;
     }
 
+    public function addRoles(string $role): self
+    {
+        $this->roles[] = $role;
+        return $this;
+    }
+
     /**
      * @return Collection<int, Post>
      */
@@ -418,5 +439,12 @@ class User
         }
 
         return $this;
+    }
+
+    public function getOrganisationTeams()
+    {
+        return array_map(function (Organisator $organisator) {
+            return $organisator->getOrganisationTeam();
+        }, $this->organisators->toArray());
     }
 }

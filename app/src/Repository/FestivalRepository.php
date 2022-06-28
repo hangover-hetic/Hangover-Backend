@@ -3,8 +3,12 @@
 namespace App\Repository;
 
 use App\Entity\Festival;
+use App\Entity\User;
+use App\Security\Roles;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+
+use Doctrine\ORM\Query\Expr;
 
 /**
  * @method Festival|null find($id, $lockMode = null, $lockVersion = null)
@@ -47,4 +51,15 @@ class FestivalRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findByUserOrganisator(User $user)
+    {
+        return $this->createQueryBuilder('f')
+            ->innerJoin('f.organisationTeam', 'org', Expr\Join::WITH,'org IN (:listOrg)' )
+            ->setParameter('listOrg', $user->getOrganisationTeams())
+            ->orderBy('f.id', 'ASC')
+            ->setMaxResults(100)
+            ->getQuery()
+            ->getResult();
+    }
 }

@@ -7,6 +7,7 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\AddMediaFestivalController;
 use App\Controller\AddPostFestivalController;
 use App\Controller\GetFestivalPostsController;
+use App\Controller\GetFestivalsAdminController;
 use App\Repository\FestivalRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -16,9 +17,24 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: FestivalRepository::class)]
 #[ApiResource(
-    collectionOperations: ["get", "post"],
+    collectionOperations: [
+        "get" => [
+//            "controller" =>
+        ],
+        "post",
+        "get_admin" => [
+            "method" => "GET",
+            "path" => "/festivals/admin",
+            "controller" => GetFestivalsAdminController::class,
+            'openapi_context' => [
+                "summary" => "Get festivals that you can edit (admin = all / organisator = those who are in the organization teams you are in)",
+            ]
+        ]
+    ],
     itemOperations: [
-        "get" => ["normalization_context" => ['groups' => ['item:festival:read']]],
+        "get" => [
+            "normalization_context" => ['groups' => ['item:festival:read']]
+        ],
         "put" => [
             "security" => "is_granted('FESTIVAL_ADMIN', object)",
             "security_message" => "You must be on the festival organisation team or admin.",

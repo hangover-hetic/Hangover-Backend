@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\OrganisationTeam;
 use App\Entity\Organisator;
 use App\Entity\User;
+use App\Security\Roles;
 use App\Service\JwtUser;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
@@ -33,7 +34,6 @@ class CreateOrganisationTeamController extends AbstractController
         $admin->setIsAdministrator(true);
         $this->entityManager->persist($admin);
         $this->entityManager->flush();
-        $data->addOrganisator($admin);
         return $data;
     }
 }
