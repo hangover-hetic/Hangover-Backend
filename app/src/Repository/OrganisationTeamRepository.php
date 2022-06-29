@@ -3,9 +3,10 @@
 namespace App\Repository;
 
 use App\Entity\OrganisationTeam;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-
+use Doctrine\ORM\Query\Expr;
 /**
  * @method OrganisationTeam|null find($id, $lockMode = null, $lockVersion = null)
  * @method OrganisationTeam|null findOneBy(array $criteria, array $orderBy = null)

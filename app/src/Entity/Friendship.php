@@ -44,6 +44,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             "method" => "GET",
             "controller" => FriendshipController::class,
             "path" => "/friendships/user/{userId}",
+            "normalization_context" => ['groups' => ['collection:user:read']],
             'requirements' => ['userId' => '\d+'],
             'deserialize' => false,
             'openapi_context' => [

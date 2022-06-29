@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\CreateOrganisationTeamController;
+use App\Controller\GetUserOrganisationTeamsController;
 use App\Repository\OrganisationTeamRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -14,9 +15,31 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: OrganisationTeamRepository::class)]
 #[ApiResource(
     collectionOperations: [
-        "get",
+        "get" => [
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "You must be administrator."
+        ],
+        "get_user" => [
+            "method" => "GET",
+            "path" => "/organisation_teams/user",
+            "controller" => GetUserOrganisationTeamsController::class,
+            'openapi_context' => [
+                "summary" => "Get organisation teams of the current user",
+            ]
+        ],
         "post" => [
             "controller" => CreateOrganisationTeamController::class
+        ]
+    ],
+    itemOperations: [
+        "get" => [
+            "security" => "is_granted('OT_VIEW', object)"
+        ],
+        "put" => [
+            "security" => "is_granted('OT_EDIT', object)"
+        ],
+        "delete" => [
+            "security" => "is_granted('OT_DELETE', object)"
         ]
     ]
 )]
@@ -37,7 +60,7 @@ class OrganisationTeam
     #[ORM\OneToMany(mappedBy: 'organisationTeam', targetEntity: Organisator::class, orphanRemoval: true)]
     private $organisators;
 
-    #[ORM\OneToMany(mappedBy: 'organisationTeam', targetEntity: Festival::class)]
+    #[ORM\OneToMany(mappedBy: 'organisationTeam', targetEntity: Festival::class, orphanRemoval: true)]
     private $festivals;
 
     public function __construct()

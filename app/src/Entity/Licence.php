@@ -8,11 +8,30 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: LicenceRepository::class)]
 #[ApiResource(
+    collectionOperations: [
+        "get"=> [
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "You must be administrator."
+        ],
+        "post" => [
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "You must be administrator."
+        ]
+    ],
     itemOperations: [
-        'get',
-        'put',
-        'delete',
-        'patch'],
+        "get"=> [
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "You must be administrator."
+        ],
+        "put" => [
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "You must be administrator."
+        ],
+        "delete" => [
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "You must be administrator."
+        ]
+    ]
 )]
 class Licence
 {

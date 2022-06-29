@@ -6,7 +6,6 @@ use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\HashPasswordController;
 use App\Repository\UserRepository;
-use App\Security\Roles;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -78,7 +77,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Assert\Regex('/^(?:0|\s?)[1-79](?:[\.\-\s]?\d\d){4}$/')]
-    #[Groups(["user:read", "item:user:read", "user:write"])]
+    #[Groups(["user:read", "item:user:read", "user:write", "collection:user:read"])]
     private string $phone;
 
     #[ORM\Column(type: 'text', nullable: true)]
@@ -91,7 +90,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(["user:read", "item:user:read", "user:write"])]
     private string $country;
 
-    #[ORM\OneToMany(mappedBy: 'relatedUser', targetEntity: Organisator::class)]
+    #[ORM\OneToMany(mappedBy: 'relatedUser', targetEntity: Organisator::class, orphanRemoval: true)]
     #[Groups(["item:user:read", "user:write"])]
     private $organisators;
 
@@ -119,6 +118,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(mappedBy: 'relatedUser', targetEntity: Post::class, orphanRemoval: true)]
     #[Groups(["user:write"])]
     private $posts;
+
+    #[ORM\OneToOne(targetEntity: Media::class, cascade: ['persist', 'remove'])]
+    #[Groups(["friendship:read", "user:read", "collection:user:read", "item:user:read", "user:write"])]
+    private $profilePicture;
 
     public function __construct()
     {
@@ -441,10 +444,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getOrganisationTeams()
+    public function getOrganisationTeams() : array
     {
         return array_map(function (Organisator $organisator) {
             return $organisator->getOrganisationTeam();
         }, $this->organisators->toArray());
+    }
+
+    public function getProfilePicture(): ?Media
+    {
+        return $this->profilePicture;
+    }
+
+    public function setProfilePicture(?Media $profilePicture): self
+    {
+        $this->profilePicture = $profilePicture;
+
+        return $this;
     }
 }

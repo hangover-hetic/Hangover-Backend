@@ -41,9 +41,11 @@ class JwtUser {
         if (!$subject->getOrganisationTeam()) return false;
         $subjectOrganisationTeamId = $subject->getOrganisationTeam()->getId();
         foreach ($user->getOrganisators() as $organisator) {
-            $organisatorOrganisationTeamId = $organisator->getOrganisationTeam()->getId();
-            if ($organisatorOrganisationTeamId)
-                $isAuthorized = $organisatorOrganisationTeamId === $subjectOrganisationTeamId;
+            if($organisator->getOrganisationTeam()) {
+                $organisatorOrganisationTeamId = $organisator->getOrganisationTeam()->getId();
+                if ($organisatorOrganisationTeamId)
+                    $isAuthorized = $organisatorOrganisationTeamId === $subjectOrganisationTeamId;
+            }
         }
         return $isAuthorized;
     }

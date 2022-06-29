@@ -6,6 +6,7 @@ use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\AddMediaFestivalController;
 use App\Controller\AddPostFestivalController;
+use App\Controller\CreateFestivalController;
 use App\Controller\GetFestivalPostsController;
 use App\Controller\GetFestivalsAdminController;
 use App\Repository\FestivalRepository;
@@ -21,7 +22,9 @@ use Symfony\Component\Validator\Constraints as Assert;
         "get" => [
 //            "controller" =>
         ],
-        "post",
+        "post" => [
+            "controller" => CreateFestivalController::class
+        ],
         "get_admin" => [
             "method" => "GET",
             "path" => "/festivals/admin",
@@ -161,7 +164,7 @@ class Festival
 
     #[ORM\ManyToOne(targetEntity: OrganisationTeam::class, inversedBy: 'festivals')]
     #[Groups(["festival:read", 'admin:read', 'festival:write'])]
-    #[Assert\NotBlank(message: "A festival must have an organisationTeam")]
+    #[Assert\NotBlank(message: "A festival must have an organisationTeam / you must be in the organisation team to add it")]
     private $organisationTeam;
 
     #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Package::class, orphanRemoval: true)]

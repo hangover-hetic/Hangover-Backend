@@ -34,6 +34,7 @@ class CreateOrganisationTeamController extends AbstractController
         $admin->setIsAdministrator(true);
         $this->entityManager->persist($admin);
         $this->entityManager->flush();
+        $data->addOrganisator($admin);
         return $data;
     }
 }
