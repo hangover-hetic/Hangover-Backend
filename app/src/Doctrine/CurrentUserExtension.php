@@ -9,6 +9,7 @@ use App\Entity\Festival;
 use App\Security\Roles;
 use App\Service\JwtUser;
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Security;
 
 final class CurrentUserExtension implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
@@ -16,7 +17,8 @@ final class CurrentUserExtension implements QueryCollectionExtensionInterface, Q
 
     public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, string $operationName = null): void
     {
-        $this->addWhere($queryBuilder, $resourceClass);
+        if ($operationName === "get_festivals")
+            $this->addWhere($queryBuilder, $resourceClass);
     }
 
     public function applyToItem(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, array $identifiers, string $operationName = null, array $context = []): void

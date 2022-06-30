@@ -20,8 +20,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: FestivalRepository::class)]
 #[ApiResource(
     collectionOperations: [
-        "get" => [
-//            "controller" =>
+        "get_festivals" => [
+            "path" => "/festivals",
+            "method" => "GET",
         ],
         "post" => [
             "controller" => CreateFestivalController::class
@@ -124,12 +125,12 @@ class Festival
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(["festival:read", 'item:festival:read', 'admin:read'])]
+    #[Groups(["festival:read", 'item:festival:read', 'admin:read', "ot:read"])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotNull]
-    #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write'])]
+    #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write', "ot:read"])]
     private ?string $name;
 
     #[ORM\Column(type: 'string', length: 255)]

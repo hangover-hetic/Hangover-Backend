@@ -44,27 +44,33 @@ use Symfony\Component\Validator\Constraints as Assert;
             "security" => "is_granted('OT_DELETE', object)"
         ]
     ],
+    normalizationContext: ["ot:read"]
 )]
 class OrganisationTeam
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(["ot:read"])]
     private int $id;
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\Length(min: 5)]
+    #[Groups(["ot:read"])]
     private ?string $name;
 
     #[ORM\OneToOne(mappedBy: 'organisationTeam', targetEntity: Licence::class, cascade: ['persist', 'remove'])]
+    #[Groups(["ot:read"])]
     private $licence;
 
     #[ORM\OneToMany(mappedBy: 'organisationTeam', targetEntity: Organisator::class, orphanRemoval: true)]
     #[ApiSubresource]
+    #[Groups(["ot:read"])]
     private $organisators;
 
     #[ORM\OneToMany(mappedBy: 'organisationTeam', targetEntity: Festival::class, orphanRemoval: true)]
     #[ApiSubresource]
+    #[Groups(["ot:read"])]
     private $festivals;
 
     public function __construct()
