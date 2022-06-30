@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use App\Controller\AddMediaFestivalController;
 use App\Controller\AddPostFestivalController;
 use App\Controller\CreateFestivalController;
@@ -169,10 +170,12 @@ class Festival
 
     #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Package::class, orphanRemoval: true)]
     #[Groups(['item:festival:read', 'admin:read', 'festival:write'])]
+    #[ApiSubresource]
     private $packages;
 
     #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Inscription::class, orphanRemoval: true)]
     #[Groups(['admin:read', 'festival:write'])]
+    #[ApiSubresource]
     private $inscriptions;
 
     #[ORM\ManyToMany(targetEntity: Media::class)]
@@ -182,9 +185,11 @@ class Festival
 
     #[ORM\ManyToMany(targetEntity: ScreenTemplate::class, inversedBy: 'festivals')]
     #[Groups(['admin:read', 'festival:write'])]
+    #[ApiSubresource]
     private $screenTemplates;
 
     #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Post::class, orphanRemoval: true)]
+    #[ApiSubresource]
     private $posts;
 
     #[ORM\ManyToOne(targetEntity: Media::class)]

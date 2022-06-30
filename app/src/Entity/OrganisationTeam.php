@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use App\Controller\CreateOrganisationTeamController;
 use App\Controller\GetUserOrganisationTeamsController;
 use App\Repository\OrganisationTeamRepository;
@@ -10,6 +11,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: OrganisationTeamRepository::class)]
@@ -41,7 +43,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         "delete" => [
             "security" => "is_granted('OT_DELETE', object)"
         ]
-    ]
+    ],
 )]
 class OrganisationTeam
 {
@@ -58,9 +60,11 @@ class OrganisationTeam
     private $licence;
 
     #[ORM\OneToMany(mappedBy: 'organisationTeam', targetEntity: Organisator::class, orphanRemoval: true)]
+    #[ApiSubresource]
     private $organisators;
 
     #[ORM\OneToMany(mappedBy: 'organisationTeam', targetEntity: Festival::class, orphanRemoval: true)]
+    #[ApiSubresource]
     private $festivals;
 
     public function __construct()

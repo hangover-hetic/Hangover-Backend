@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
+use App\Controller\GetCurrentUserController;
 use App\Controller\HashPasswordController;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -28,7 +30,18 @@ use Symfony\Component\Validator\Constraints as Assert;
         ],
         "post" => [
             "controller" => HashPasswordController::class
-        ]
+        ],
+        "get_user" => [
+            "method" => "GET",
+            "path" => "/users/current",
+            "controller" => GetCurrentUserController::class,
+            'openapi_context' => [
+                "summary" => "Get organisation teams of the current user",
+            ],
+            "normalization_context" => [
+                "groups" => ["item:user:read"]
+            ],
+        ],
     ],
     itemOperations: [
         "get" => [
@@ -99,15 +112,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $boughtPackages;
 
     #[ORM\OneToMany(mappedBy: 'relatedUser', targetEntity: Inscription::class, orphanRemoval: true)]
-    #[Groups(["user:read", "item:user:read", "user:write"])]
+    #[Groups(["item:user:read", "user:write"])]
     private $inscriptions;
 
     #[ORM\OneToMany(mappedBy: 'relatedUser', targetEntity: Friendship::class, orphanRemoval: true)]
-    #[Groups(["item:user:read", "user:write"])]
+    #[Groups(["user:write"])]
     private $friendships;
 
     #[ORM\OneToMany(mappedBy: 'friend', targetEntity: Friendship::class, orphanRemoval: true)]
-    #[Groups(["item:user:read", "user:write"])]
+    #[Groups(["user:write"])]
     private $friendsWithMe;
 
     #[ORM\Column(type: 'array')]
@@ -117,6 +130,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToMany(mappedBy: 'relatedUser', targetEntity: Post::class, orphanRemoval: true)]
     #[Groups(["user:write"])]
+    #[ApiSubresource]
     private $posts;
 
     #[ORM\OneToOne(targetEntity: Media::class, cascade: ['persist', 'remove'])]
@@ -444,7 +458,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getOrganisationTeams() : array
+    public function getOrganisationTeams(): array
     {
         return array_map(function (Organisator $organisator) {
             return $organisator->getOrganisationTeam();
