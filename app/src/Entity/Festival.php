@@ -197,6 +197,19 @@ class Festival
     #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write'])]
     private $cover;
 
+    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: OrganisationMessage::class, orphanRemoval: true)]
+    #[Groups(['item:festival:read', 'admin:read', 'festival:write'])]
+    private $organisationMessages;
+
+    #[ORM\ManyToOne(targetEntity: Media::class)]
+    #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write'])]
+    private $icon;
+
+    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Singer::class, orphanRemoval: true)]
+    #[Groups(['item:festival:read', 'admin:read', 'festival:write'])]
+    private $singers;
+
+
     public function __construct()
     {
         $this->packages = new ArrayCollection();
@@ -205,6 +218,9 @@ class Festival
         $this->gallery = new ArrayCollection();
         $this->screenTemplates = new ArrayCollection();
         $this->posts = new ArrayCollection();
+        $this->organisationMessages = new ArrayCollection();
+        $this->singersImages = new ArrayCollection();
+        $this->singers = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -467,6 +483,78 @@ class Festival
     public function setCover(?Media $cover): self
     {
         $this->cover = $cover;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, OrganisationMessage>
+     */
+    public function getOrganisationMessages(): Collection
+    {
+        return $this->organisationMessages;
+    }
+
+    public function addOrganisationMessage(OrganisationMessage $organisationMessage): self
+    {
+        if (!$this->organisationMessages->contains($organisationMessage)) {
+            $this->organisationMessages[] = $organisationMessage;
+            $organisationMessage->setFestival($this);
+        }
+
+        return $this;
+    }
+
+    public function removeOrganisationMessage(OrganisationMessage $organisationMessage): self
+    {
+        if ($this->organisationMessages->removeElement($organisationMessage)) {
+            // set the owning side to null (unless already changed)
+            if ($organisationMessage->getFestival() === $this) {
+                $organisationMessage->setFestival(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getIcon(): ?Media
+    {
+        return $this->icon;
+    }
+
+    public function setIcon(?Media $icon): self
+    {
+        $this->icon = $icon;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Singer>
+     */
+    public function getSingers(): Collection
+    {
+        return $this->singers;
+    }
+
+    public function addSinger(Singer $singer): self
+    {
+        if (!$this->singers->contains($singer)) {
+            $this->singers[] = $singer;
+            $singer->setFestival($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSinger(Singer $singer): self
+    {
+        if ($this->singers->removeElement($singer)) {
+            // set the owning side to null (unless already changed)
+            if ($singer->getFestival() === $this) {
+                $singer->setFestival(null);
+            }
+        }
 
         return $this;
     }

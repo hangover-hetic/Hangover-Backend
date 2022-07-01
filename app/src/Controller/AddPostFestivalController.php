@@ -11,8 +11,12 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Mercure\HubInterface;
+use Symfony\Component\Mercure\Update;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Exception\InvalidParameterException;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
+use Symfony\Component\Serializer\SerializerInterface;
 
 class AddPostFestivalController extends AbstractController
 {
@@ -21,7 +25,9 @@ class AddPostFestivalController extends AbstractController
         Request                $request,
         EntityManagerInterface $entityManager,
         IriConverterInterface  $iriConverter,
-        JwtUser $jwtUser
+        JwtUser $jwtUser,
+        HubInterface $hub,
+        SerializerInterface $serializer,
     )
     {
         $mediaIri = $request->get("media");
@@ -37,6 +43,14 @@ class AddPostFestivalController extends AbstractController
         $post->setFestival($festival);
         $entityManager->persist($post);
         $entityManager->flush();
+
+        $update = new Update(
+            sprintf('https://hangoverapp.com/festival/%s/feed/', $festival->getId()),
+            $serializer->serialize($post, 'json')
+        );
+
+        $hub->publish($update);
+
         return $post;
     }
 }

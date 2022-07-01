@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Controller\FriendshipCreationController;
-use Symfony\Component\Validator\Constraints as Assert;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Controller\FriendshipController;
 use App\Repository\FriendshipRepository;
@@ -18,24 +17,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
             "controller" => FriendshipCreationController::class,
             "path" => "/friendships",
             'openapi_context' => [
-                "summary" => "Get all friend from a user",
+                "summary" => "Create a friendship relation",
                 "parameters" => [
-                    [
-                        "name" => "relatedUser",
-                        "in" => "body",
-                        "required" => true,
-                        "type" => "number"
-                    ],
                     [
                         "name" => "friend",
                         "in" => "body",
                         "required" => true,
-                        "type" => "number"
-                    ],
-                    [
-                        "name" => "validated",
-                        "in" => "body",
-                        "type" => "boolean"
+                        "type" => "iri"
                     ]
                 ]
             ],
@@ -60,7 +48,17 @@ use Symfony\Component\Serializer\Annotation\Groups;
             ],
         ]
     ],
-    itemOperations: ["get", "put", "delete"], normalizationContext: ["groups" => ["friendship:read"]]
+    itemOperations: [
+        "get" => [
+            "security" => "is_granted('FRIENDSHIP_VIEW', object)"
+        ],
+        "put" => [
+            "security" => "is_granted('FRIENDSHIP_EDIT', object)"
+        ],
+        "delete" => [
+            "security" => "is_granted('FRIENDSHIP_VIEW', object)"
+        ]
+    ], normalizationContext: ["groups" => ["friendship:read"]]
 )]
 class Friendship
 {

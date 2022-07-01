@@ -137,6 +137,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(["friendship:read", "user:read", "collection:user:read", "item:user:read", "user:write"])]
     private $profilePicture;
 
+    #[ORM\Column(type: 'boolean')]
+    #[Groups(["friendship:read", "user:read", "collection:user:read", "item:user:read", "user:write"])]
+    private $ghostMode = true;
+
     public function __construct()
     {
         $this->organisators = new ArrayCollection();
@@ -473,6 +477,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setProfilePicture(?Media $profilePicture): self
     {
         $this->profilePicture = $profilePicture;
+
+        return $this;
+    }
+
+    public function isGhostMode(): ?bool
+    {
+        return $this->ghostMode;
+    }
+
+    public function setGhostMode(bool $ghostMode): self
+    {
+        $this->ghostMode = $ghostMode;
 
         return $this;
     }
