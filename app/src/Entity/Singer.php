@@ -16,10 +16,7 @@ class Singer
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    private $firstName;
-
-    #[ORM\Column(type: 'string', length: 255)]
-    private $lastName;
+    private $name;
 
     #[ORM\ManyToOne(targetEntity: Media::class)]
     private $image;
@@ -33,29 +30,18 @@ class Singer
         return $this->id;
     }
 
-    public function getFirstName(): ?string
+    public function getName(): ?string
     {
-        return $this->firstName;
+        return $this->name;
     }
 
-    public function setFirstName(string $firstName): self
+    public function setName(string $name): self
     {
-        $this->firstName = $firstName;
+        $this->name = $name;
 
         return $this;
     }
 
-    public function getLastName(): ?string
-    {
-        return $this->lastName;
-    }
-
-    public function setLastName(string $lastName): self
-    {
-        $this->lastName = $lastName;
-
-        return $this;
-    }
 
     public function getImage(): ?Media
     {

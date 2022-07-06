@@ -6,17 +6,20 @@ use App\Repository\UserRepository;
 use App\Service\JwtMercure;
 use Lexik\Bundle\JWTAuthenticationBundle\Event\AuthenticationSuccessEvent;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class AuthenticationSuccessListener
 {
 
     private UserRepository $userRepository;
     private JwtMercure $jwtMercure;
+    private NormalizerInterface $normalizer;
 
-    public function __construct(UserRepository $userRepository, JwtMercure $jwtMercure)
+    public function __construct(UserRepository $userRepository, JwtMercure $jwtMercure, NormalizerInterface $normalizer)
     {
         $this->userRepository = $userRepository;
         $this->jwtMercure = $jwtMercure;
+        $this->normalizer = $normalizer;
     }
 
     /**
@@ -33,7 +36,7 @@ class AuthenticationSuccessListener
         $realUser = $this->userRepository->findOneByEmail($user->getUserIdentifier());
         $data['mercureToken'] = $this->jwtMercure->createJwt($realUser);
         $data['roles'] = $user->getRoles();
-        $data['userId'] = $realUser->getId();
+        $data['user'] = $this->normalizer->normalize($realUser);
 
         $event->setData($data);
     }
