@@ -47,7 +47,10 @@ final class InscriptionFactory extends ModelFactory
     {
         // see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#initialization
         return $this
-            // ->afterInstantiate(function(UserFestival $userFestival): void {})
+             ->afterInstantiate(function(Inscription $inscription): void {
+                 $inscription->setStartDate($inscription->getFestival()->getStartDate());
+                 $inscription->setEndDate($inscription->getFestival()->getEndDate());
+             })
         ;
     }
 

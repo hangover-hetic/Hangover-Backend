@@ -2,9 +2,11 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Annotation\ApiSubresource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Controller\GetCurrentUserController;
 use App\Controller\HashPasswordController;
 use App\Repository\UserRepository;
@@ -24,9 +26,7 @@ use Symfony\Component\Validator\Constraints as Assert;
         "get" => [
             "normalization_context" => [
                 "groups" => ["collection:user:read"]
-            ],
-            "security" => "is_granted('ROLE_ADMIN')",
-            "security_message" => "You must be administrator."
+            ]
         ],
         "post" => [
             "controller" => HashPasswordController::class
@@ -61,6 +61,7 @@ use Symfony\Component\Validator\Constraints as Assert;
     denormalizationContext: ["groups" => ["user:write"]],
     normalizationContext: ["groups" => ["user:read"]]
 )]
+#[ApiFilter(SearchFilter::class, properties: ["email" =>  "partial"])]
 #[UniqueEntity('email')]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {

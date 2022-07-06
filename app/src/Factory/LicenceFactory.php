@@ -41,7 +41,7 @@ final class LicenceFactory extends ModelFactory
             // TODO add your default values here (https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories)
             'start_date' => self::faker()->dateTimeBetween('-1 year', '-1 day'),
             'end_date' => self::faker()->dateTimeBetween('+1 year', '+2 years'),
-            'is_buyed' => true,
+            'isBuyed' => true,
         ];
     }
 

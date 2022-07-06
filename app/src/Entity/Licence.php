@@ -5,6 +5,8 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\LicenceRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 #[ORM\Entity(repositoryClass: LicenceRepository::class)]
 #[ApiResource(
@@ -41,13 +43,15 @@ class Licence
     private ?int $id;
 
     #[ORM\Column(type: 'date')]
-    private ?\DateTimeInterface $start_date;
+    #[Assert\NotBlank]
+    private ?\DateTimeInterface $startDate;
 
     #[ORM\Column(type: 'date')]
-    private ?\DateTimeInterface $end_date;
+    #[Assert\NotBlank]
+    private ?\DateTimeInterface $endDate;
 
     #[ORM\Column(type: 'boolean')]
-    private ?bool $is_buyed;
+    private ?bool $isBuyed = false;
 
     #[ORM\OneToOne(inversedBy: 'licence', targetEntity: OrganisationTeam::class, cascade: ['persist', 'remove'])]
     private $organisationTeam;
@@ -59,36 +63,36 @@ class Licence
 
     public function getStartDate(): ?\DateTimeInterface
     {
-        return $this->start_date;
+        return $this->startDate;
     }
 
-    public function setStartDate(\DateTimeInterface $start_date): self
+    public function setStartDate(\DateTimeInterface $startDate): self
     {
-        $this->start_date = $start_date;
+        $this->startDate = $startDate;
 
         return $this;
     }
 
     public function getEndDate(): ?\DateTimeInterface
     {
-        return $this->end_date;
+        return $this->endDate;
     }
 
-    public function setEndDate(\DateTimeInterface $end_date): self
+    public function setEndDate(\DateTimeInterface $endDate): self
     {
-        $this->end_date = $end_date;
+        $this->endDate = $endDate;
 
         return $this;
     }
 
     public function getIsBuyed(): ?bool
     {
-        return $this->is_buyed;
+        return $this->isBuyed;
     }
 
-    public function setIsBuyed(bool $is_buyed): self
+    public function setIsBuyed(bool $isBuyed): self
     {
-        $this->is_buyed = $is_buyed;
+        $this->isBuyed = $isBuyed;
 
         return $this;
     }

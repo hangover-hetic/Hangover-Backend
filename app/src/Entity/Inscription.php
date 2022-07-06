@@ -2,14 +2,49 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\MongoDbOdm\Filter\SearchFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 use App\Repository\InscriptionRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: InscriptionRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    collectionOperations: [
+        "get_inscriptions" => [
+            "method" => "GET",
+            "path" => "inscriptions"
+        ],
+        "get_inscriptions_admin" => [
+            "method" => "GET",
+            "path" => "inscriptions/admin",
+            "security" => "is_granted('ROLE_ADMIN')",
+            "security_message" => "You must be administrator."
+        ],
+        "post" => [
+            "security" => "is_granted('INSCRIPTION_EDIT')",
+            "security_message" => "You must be administrator."
+        ]
+    ],
+    itemOperations: [
+        "get" => [
+            "security" => "is_granted('INSCRIPTION_VIEW')",
+            "security_message" => "You must be administrator."
+        ],
+        "put" => [
+            "security" => "is_granted('INSCRIPTION_EDIT')",
+            "security_message" => "You must be administrator."
+        ],
+        "delete" => [
+            "security" => "is_granted('INSCRIPTION_EDIT')",
+            "security_message" => "You must be administrator."
+        ]
+    ]
+)]
+#[ApiFilter(DateFilter::class, properties: ['startDate', 'endDate'])]
 class Inscription
 {
     #[ORM\Id]
@@ -30,6 +65,12 @@ class Inscription
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'inscriptions')]
     #[ORM\JoinColumn(nullable: false)]
     private $relatedUser;
+
+    #[ORM\Column(type: 'date')]
+    private $startDate;
+
+    #[ORM\Column(type: 'date')]
+    private $endDate;
 
     public function getId(): ?int
     {
@@ -80,6 +121,30 @@ class Inscription
     public function setRelatedUser(?User $relatedUser): self
     {
         $this->relatedUser = $relatedUser;
+
+        return $this;
+    }
+
+    public function getStartDate(): ?\DateTimeInterface
+    {
+        return $this->startDate;
+    }
+
+    public function setStartDate(\DateTimeInterface $startDate): self
+    {
+        $this->startDate = $startDate;
+
+        return $this;
+    }
+
+    public function getEndDate(): ?\DateTimeInterface
+    {
+        return $this->endDate;
+    }
+
+    public function setEndDate(\DateTimeInterface $endDate): self
+    {
+        $this->endDate = $endDate;
 
         return $this;
     }

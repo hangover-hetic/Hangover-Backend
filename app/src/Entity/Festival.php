@@ -8,7 +8,6 @@ use ApiPlatform\Core\Annotation\ApiSubresource;
 use App\Controller\AddMediaFestivalController;
 use App\Controller\AddPostFestivalController;
 use App\Controller\CreateFestivalController;
-use App\Controller\GetFestivalPostsController;
 use App\Controller\GetFestivalsAdminController;
 use App\Repository\FestivalRepository;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -56,7 +55,6 @@ use Symfony\Component\Validator\Constraints as Assert;
             'requirements' => ['id' => '\d+'],
             'controller' => AddMediaFestivalController::class,
             'deserialize' => false,
-
             'openapi_context' => [
                 "summary" => "Add media to the festival gallery",
                 "content" => [
@@ -69,13 +67,6 @@ use Symfony\Component\Validator\Constraints as Assert;
                                 ],
                         ],
                     ],
-                ],
-                "parameters" => [
-                    [
-                        "name" => "media",
-                        "in" => "body",
-                        "type" => "iri"
-                    ]
                 ]
 
             ],
@@ -121,6 +112,7 @@ class Festival
         Festival::STATUS_PUBLISHED,
         Festival::STATUS_VALIDATED
     ];
+
 
     #[ORM\Id]
     #[ORM\GeneratedValue]

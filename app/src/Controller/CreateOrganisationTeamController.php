@@ -2,11 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Licence;
 use App\Entity\OrganisationTeam;
 use App\Entity\Organisator;
 use App\Entity\User;
 use App\Security\Roles;
 use App\Service\JwtUser;
+use Carbon\Carbon;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -16,24 +18,29 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 class CreateOrganisationTeamController extends AbstractController
 {
-    private JwtUser $jwtUser;
-    private EntityManager $entityManager;
-
-    public function __construct(JwtUser $token, EntityManagerInterface $entityManager)
-    {
-        $this->jwtUser = $token;
-        $this->entityManager = $entityManager;
-    }
-
-    public function __invoke(OrganisationTeam $data)
+    public function __invoke(
+        OrganisationTeam $data,
+        JwtUser $jwtUser,
+        EntityManagerInterface $entityManager,
+    )
     {
         $admin = new Organisator();
-        $user = $this->jwtUser->getActualUser();
+        $user = $jwtUser->getActualUser();
         // if the user is anonymous, do not grant access
         $admin->setRelatedUser($user);
         $admin->setIsAdministrator(true);
-        $this->entityManager->persist($admin);
-        $this->entityManager->flush();
+        $entityManager->persist($admin);
+
+        $licence = new Licence();
+        $now = Carbon::now();
+        $licence->setOrganisationTeam($data);
+        $licence->setStartDate($now->toDateTime());
+        $licence->setEndDate($now->addYear()->toDateTime());
+        /* TODO : handle buyed */
+        $licence->setIsBuyed(true);
+        $entityManager->persist($licence);
+
+        $entityManager->flush();
         $data->addOrganisator($admin);
         return $data;
     }

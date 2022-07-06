@@ -3,16 +3,15 @@
 Conf nginx pour l'api :
 ````nginx
 server {
- server_name hangover.timotheedurand.fr;
+    server_name hangover.timotheedurand.fr;
 
- location / {
-  proxy_pass http://localhost:8080/;
- }
+    location / {
+    proxy_pass http://localhost:8080/;
+    }
 
-location /admin {
-proxy_pass http://localhost:8081/;
-}
-
+    location /admin {
+        proxy_pass http://localhost:8081/;
+    }
 }
 ````
 

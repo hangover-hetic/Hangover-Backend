@@ -25,7 +25,7 @@ class HashPasswordController extends AbstractController
                 $data->setPassword($passwordHasher->hashPassword($data, $request->get("password")));
                 break;
             case "PUT":
-                $data->setPassword($passwordHasher->hashPassword($data, $data->getPassword()));
+                if($request->get("password")) $data->setPassword($passwordHasher->hashPassword($data, $request->get("password")));
                 break;
         }
         return $data;

@@ -65,7 +65,10 @@ class AppFixtures extends Fixture
         });
 
         InscriptionFactory::createMany(60, function () {
-            return ['festival' => FestivalFactory::random(), 'relatedUser' => UserFactory::random()];
+            return [
+                'festival' => FestivalFactory::random(),
+                'relatedUser' => UserFactory::random()
+            ];
         });
 
         PackageFactory::createMany(20, function () {
