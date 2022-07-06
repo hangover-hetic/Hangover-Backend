@@ -4,13 +4,15 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\PostRepository;
+use Carbon\Carbon;
 use Doctrine\ORM\Mapping as ORM;
 
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
-#[ApiResource(normalizationContext: ["groups"=> ["post:read"]])]
+#[ApiResource(normalizationContext: ["groups" => ["post:read"]])]
+#[ORM\HasLifecycleCallbacks]
 class Post
 {
     #[ORM\Id]
@@ -34,6 +36,18 @@ class Post
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(["post:read"])]
     private $relatedUser;
+
+    #[ORM\Column(type: 'datetime_immutable')]
+    #[Groups(["post:read"])]
+    private $createdAt;
+
+    #[ORM\PrePersist]
+    public function updatedTimestamps(): void
+    {
+        if ($this->getCreatedAt() === null) {
+            $this->setCreatedAt(Carbon::now()->toDateTimeImmutable());
+        }
+    }
 
 
     public function getId(): ?int
@@ -74,6 +88,18 @@ class Post
     public function setRelatedUser(?User $relatedUser): self
     {
         $this->relatedUser = $relatedUser;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeImmutable
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self
+    {
+        $this->createdAt = $createdAt;
 
         return $this;
     }

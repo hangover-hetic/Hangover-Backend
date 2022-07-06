@@ -117,12 +117,12 @@ class Festival
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(["festival:read", 'item:festival:read', 'admin:read', "ot:read"])]
+    #[Groups(["festival:read", 'item:festival:read', 'admin:read', "ot:read", "post:read"])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotNull]
-    #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write', "ot:read"])]
+    #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write', "ot:read", "post:read"])]
     private ?string $name;
 
     #[ORM\Column(type: 'string', length: 255)]
@@ -153,7 +153,7 @@ class Festival
     private ?array $map = [];
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write'])]
+    #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write', "post:read"])]
     private ?string $location;
 
     #[ORM\ManyToOne(targetEntity: OrganisationTeam::class, inversedBy: 'festivals')]
