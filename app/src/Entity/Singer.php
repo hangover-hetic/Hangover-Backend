@@ -5,24 +5,32 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\SingerRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: SingerRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    denormalizationContext: ["groups" => ['singer:read']],
+    normalizationContext: ["groups" => ['singer:write']]
+)]
 class Singer
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(['item:festival:read', 'singer:read'])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(['item:festival:read', 'singer:read', 'singer:write'])]
     private $name;
 
     #[ORM\ManyToOne(targetEntity: Media::class)]
+    #[Groups(['item:festival:read', 'singer:read', 'singer:write'])]
     private $image;
 
     #[ORM\ManyToOne(targetEntity: Festival::class, inversedBy: 'singers')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['singer:read', 'singer:write'])]
     private $festival;
 
     public function getId(): ?int
