@@ -38,6 +38,8 @@ class AppFixtures extends Fixture
 
         $userAdmin = new User();
         $userAdmin->setEmail("admin@hangover.com");
+        $userAdmin->setFirstName("Ultimate");
+        $userAdmin->setLastName("Master");
         $userAdmin->setPassword($this->hasher->hashPassword($userAdmin, "password"));
         $userAdmin->setPhone("0698784523");
         $userAdmin->setRoles(["ROLE_ADMIN"]);

@@ -25,7 +25,7 @@ class Singer
     private $name;
 
     #[ORM\ManyToOne(targetEntity: Media::class)]
-    #[ORM\JoinColumn(nullable:true, onDelete:'SET NULL')]
+    #[ORM\JoinColumn(nullable:true)]
     #[Groups(['item:festival:read', 'singer:read', 'singer:write'])]
     private $image;
 
