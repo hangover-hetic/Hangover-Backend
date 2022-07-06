@@ -9,8 +9,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: SingerRepository::class)]
 #[ApiResource(
-    denormalizationContext: ["groups" => ['singer:read']],
-    normalizationContext: ["groups" => ['singer:write']]
+    denormalizationContext: ['groups' => ['singer:write']],
+    normalizationContext: ["groups" => ["singer:read"]]
 )]
 class Singer
 {
@@ -25,6 +25,7 @@ class Singer
     private $name;
 
     #[ORM\ManyToOne(targetEntity: Media::class)]
+    #[ORM\JoinColumn(nullable:true, onDelete:'SET NULL')]
     #[Groups(['item:festival:read', 'singer:read', 'singer:write'])]
     private $image;
 
