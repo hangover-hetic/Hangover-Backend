@@ -5,6 +5,7 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\LicenceRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 
@@ -40,17 +41,21 @@ class Licence
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(["ot:read"])]
     private ?int $id;
 
     #[ORM\Column(type: 'date')]
     #[Assert\NotBlank]
+    #[Groups(["ot:read"])]
     private ?\DateTimeInterface $startDate;
 
     #[ORM\Column(type: 'date')]
     #[Assert\NotBlank]
+    #[Groups(["ot:read"])]
     private ?\DateTimeInterface $endDate;
 
     #[ORM\Column(type: 'boolean')]
+    #[Groups(["ot:read"])]
     private ?bool $isBuyed = false;
 
     #[ORM\OneToOne(inversedBy: 'licence', targetEntity: OrganisationTeam::class, cascade: ['persist', 'remove'])]

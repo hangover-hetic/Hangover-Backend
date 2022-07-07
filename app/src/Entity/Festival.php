@@ -145,7 +145,7 @@ class Festival
     #[ORM\Column(type: 'string', length: 20, nullable: true)]
     #[Assert\Choice(choices: Festival::STATUS, message: 'Choose a valid status : DRAFT, PUBLISHED, VALIDATED')]
     #[Groups(["festival:read", 'festival:write'])]
-    #[ApiProperty(security: "is_granted('FESTIVAL_ADMIN', object)")]
+    #[ApiProperty(security: "is_granted('ROLE_ADMIN', object)")]
     private ?string $status;
 
     #[ORM\Column(type: 'json')]

@@ -6,8 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="7efb89e3-c713-471b-8e3f-2f1d24adcf18" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/config/packages/doctrine.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/app/config/packages/doctrine.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/Entity/Post.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/Entity/Post.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/Entity/Festival.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/Entity/Festival.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/Entity/Media.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/Entity/Media.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/Entity/OrganisationTeam.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/Entity/OrganisationTeam.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/Entity/Organisator.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/Entity/Organisator.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/Entity/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/Entity/User.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -177,7 +180,8 @@
       <workItem from="1657113064287" duration="2047000" />
       <workItem from="1657115701882" duration="3169000" />
       <workItem from="1657134768238" duration="875000" />
-      <workItem from="1657135775046" duration="1247000" />
+      <workItem from="1657135775046" duration="1628000" />
+      <workItem from="1657188503599" duration="1902000" />
     </task>
     <servers />
   </component>

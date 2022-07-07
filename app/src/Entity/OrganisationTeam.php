@@ -44,7 +44,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             "security" => "is_granted('OT_DELETE', object)"
         ]
     ],
-    normalizationContext: ["ot:read"]
+    normalizationContext: ["groups" => ["ot:read"]]
 )]
 class OrganisationTeam
 {

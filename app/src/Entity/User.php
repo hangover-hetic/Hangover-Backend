@@ -69,19 +69,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(["friendship:read", "user:read", "collection:user:read", "item:user:read", "post:read"])]
+    #[Groups(["friendship:read", "user:read", "collection:user:read", "item:user:read", "post:read", "ot:read"])]
     private int $id;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["friendship:read", "user:read", "collection:user:read", "item:user:read", "user:write", "post:read"])]
+    #[Groups(["friendship:read", "user:read", "collection:user:read", "item:user:read", "user:write", "post:read", "ot:read"])]
     private string $firstName;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["friendship:read", "user:read", "collection:user:read", "item:user:read", "user:write", "post:read"])]
+    #[Groups(["friendship:read", "user:read", "collection:user:read", "item:user:read", "user:write", "post:read", "ot:read"])]
     private string $lastName;
 
     #[ORM\Column(type: 'string', length: 255, unique: true)]
-    #[Groups(["user:read", "collection:user:read", "item:user:read", "user:write"])]
+    #[Groups(["user:read", "collection:user:read", "item:user:read", "user:write", "ot:read"])]
     private string $email;
 
     #[ORM\Column(type: 'string', length: 255)]
@@ -135,7 +135,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $posts;
 
     #[ORM\OneToOne(targetEntity: Media::class, cascade: ['persist', 'remove'])]
-    #[Groups(["friendship:read", "user:read", "collection:user:read", "item:user:read", "user:write", "post:read"])]
+    #[Groups(["friendship:read", "user:read", "collection:user:read", "item:user:read", "user:write", "post:read", "ot:read"])]
     private $profilePicture;
 
     #[ORM\Column(type: 'boolean')]
