@@ -117,12 +117,12 @@ class Festival
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(["festival:read", 'item:festival:read', 'admin:read', "ot:read", "post:read"])]
+    #[Groups(["festival:read", 'item:festival:read', 'admin:read', "ot:read", "post:read", "inscription:read"])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotNull]
-    #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write', "ot:read", "post:read"])]
+    #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write', "ot:read", "post:read", "inscription:read"])]
     private ?string $name;
 
     #[ORM\Column(type: 'string', length: 255)]
@@ -186,7 +186,7 @@ class Festival
     private $posts;
 
     #[ORM\ManyToOne(targetEntity: Media::class)]
-    #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write'])]
+    #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write', "inscription:read"])]
     private $cover;
 
     #[ORM\OneToMany(mappedBy: 'festival', targetEntity: OrganisationMessage::class, orphanRemoval: true)]

@@ -7,10 +7,11 @@
     <list default="true" id="7efb89e3-c713-471b-8e3f-2f1d24adcf18" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/Entity/Festival.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/Entity/Festival.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/Entity/Inscription.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/Entity/Inscription.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/Entity/Media.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/Entity/Media.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/Entity/OrganisationTeam.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/Entity/OrganisationTeam.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/Entity/Organisator.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/Entity/Organisator.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/src/Entity/User.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/Entity/User.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/Factory/FestivalFactory.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/Factory/FestivalFactory.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/src/Repository/InscriptionRepository.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/Repository/InscriptionRepository.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -151,18 +152,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "preferences.lookFeel",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\timot\CODE_PROJECTS\COURS\Hangover-Backend\app" />
@@ -181,7 +183,7 @@
       <workItem from="1657115701882" duration="3169000" />
       <workItem from="1657134768238" duration="875000" />
       <workItem from="1657135775046" duration="1628000" />
-      <workItem from="1657188503599" duration="1902000" />
+      <workItem from="1657188503599" duration="6611000" />
     </task>
     <servers />
   </component>
@@ -198,5 +200,9 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
   </component>
 </project>

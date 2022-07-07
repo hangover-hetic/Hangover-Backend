@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Inscription;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -47,4 +48,17 @@ class InscriptionRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findNextByUser(User $user)
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.relatedUser = :user')
+            ->andWhere('u.startDate > :now')
+            ->setParameter('user', $user)
+            ->setParameter('now', new \DateTime())
+            ->orderBy('u.startDate', 'ASC')
+            ->setMaxResults(100)
+            ->getQuery()
+            ->getResult();
+    }
 }

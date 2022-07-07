@@ -4,6 +4,7 @@ namespace App\Factory;
 
 use App\Entity\Festival;
 use App\Repository\FestivalRepository;
+use Carbon\Carbon;
 use Zenstruck\Foundry\RepositoryProxy;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
@@ -37,12 +38,12 @@ final class FestivalFactory extends ModelFactory
 
     protected function getDefaults(): array
     {
+        $startDate = self::faker()->dateTimeBetween('now', '1 years');
         return [
-            // TODO add your default values here (https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories)
             'name' => self::faker()->word(),
             'description' => self::faker()->text(),
-            'start_date' => self::faker()->dateTimeBetween('-2 years', '-1 years'), // TODO add DATETIME ORM type manually
-            'end_date' => self::faker()->dateTimeBetween('-1 year', 'now'), // TODO add DATETIME ORM type manually
+            'start_date' => $startDate,
+            'end_date' => Carbon::create($startDate)->addDays(rand(1, 5)),
             'programmation' => [],
             'map' => [],
             'location' => self::faker()->city,

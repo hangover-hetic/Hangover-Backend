@@ -69,15 +69,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(["friendship:read", "user:read", "collection:user:read", "item:user:read", "post:read", "ot:read"])]
+    #[Groups(["friendship:read", "user:read", "collection:user:read", "item:user:read", "post:read", "ot:read", "inscription:read"])]
     private int $id;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["friendship:read", "user:read", "collection:user:read", "item:user:read", "user:write", "post:read", "ot:read"])]
+    #[Groups(["friendship:read", "user:read", "collection:user:read", "item:user:read", "user:write", "post:read", "ot:read", "inscription:read"])]
     private string $firstName;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["friendship:read", "user:read", "collection:user:read", "item:user:read", "user:write", "post:read", "ot:read"])]
+    #[Groups(["friendship:read", "user:read", "collection:user:read", "item:user:read", "user:write", "post:read", "ot:read", "inscription:read"])]
     private string $lastName;
 
     #[ORM\Column(type: 'string', length: 255, unique: true)]
@@ -106,14 +106,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\OneToMany(mappedBy: 'relatedUser', targetEntity: Organisator::class, orphanRemoval: true)]
     #[Groups(["item:user:read", "user:write"])]
+    #[ApiSubresource]
     private $organisators;
 
     #[ORM\OneToMany(mappedBy: 'relatedUser', targetEntity: BoughtPackage::class, orphanRemoval: true)]
     #[Groups(["item:user:read", "user:write"])]
+    #[ApiSubresource]
     private $boughtPackages;
 
     #[ORM\OneToMany(mappedBy: 'relatedUser', targetEntity: Inscription::class, orphanRemoval: true)]
     #[Groups(["item:user:read", "user:write"])]
+    #[ApiSubresource]
     private $inscriptions;
 
     #[ORM\OneToMany(mappedBy: 'relatedUser', targetEntity: Friendship::class, orphanRemoval: true)]
@@ -135,7 +138,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private $posts;
 
     #[ORM\OneToOne(targetEntity: Media::class, cascade: ['persist', 'remove'])]
-    #[Groups(["friendship:read", "user:read", "collection:user:read", "item:user:read", "user:write", "post:read", "ot:read"])]
+    #[Groups(["friendship:read", "user:read", "collection:user:read", "item:user:read", "user:write", "post:read", "ot:read", "inscription:read"])]
     private $profilePicture;
 
     #[ORM\Column(type: 'boolean')]

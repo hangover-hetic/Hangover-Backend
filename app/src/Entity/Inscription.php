@@ -6,9 +6,11 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\MongoDbOdm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use App\Controller\GetFriendsInscriptionsController;
 use App\Repository\InscriptionRepository;
 use Doctrine\ORM\Mapping as ORM;
 
+use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: InscriptionRepository::class)]
@@ -27,13 +29,20 @@ use Symfony\Component\Validator\Constraints as Assert;
         "post" => [
             "security" => "is_granted('INSCRIPTION_EDIT')",
             "security_message" => "You must be administrator."
-        ]
+        ],
+        "get_inscriptions_friends" => [
+            "method"=>"GET",
+            "controller"=> GetFriendsInscriptionsController::class,
+            "path"=>"/inscriptions/friends"
+        ],
     ],
     itemOperations: [
         "get" => [
             "security" => "is_granted('INSCRIPTION_VIEW')",
-            "security_message" => "You must be administrator."
+            "security_message" => "You must be administrator.",
+            "normalization_context" => ["groups" => ["item:inscription:read"]]
         ],
+
         "put" => [
             "security" => "is_granted('INSCRIPTION_EDIT')",
             "security_message" => "You must be administrator."
@@ -42,7 +51,8 @@ use Symfony\Component\Validator\Constraints as Assert;
             "security" => "is_granted('INSCRIPTION_EDIT')",
             "security_message" => "You must be administrator."
         ]
-    ]
+    ],
+    normalizationContext: ["groups" => ["inscription:read"]]
 )]
 #[ApiFilter(DateFilter::class, properties: ['startDate', 'endDate'])]
 class Inscription
@@ -50,26 +60,33 @@ class Inscription
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
+    #[Groups(["inscription:read", "item:inscription:read"])]
     private int $id;
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\Url]
+    #[Groups(["item:inscription:read"])]
     private $ticketPath;
 
     #[ORM\Column(type: 'json', nullable: true)]
+    #[Groups(["item:inscription:read"])]
     private $agenda = [];
 
     #[ORM\ManyToOne(targetEntity: Festival::class, inversedBy: 'inscriptions')]
+    #[Groups(["inscription:read"])]
     private $festival;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'inscriptions')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(["inscription:read"])]
     private $relatedUser;
 
     #[ORM\Column(type: 'date')]
+    #[Groups(["item:inscription:read", "inscription:read"])]
     private $startDate;
 
     #[ORM\Column(type: 'date')]
+    #[Groups(["item:inscription:read", "inscription:read"])]
     private $endDate;
 
     public function getId(): ?int
