@@ -39,7 +39,7 @@ final class ShowFactory extends ModelFactory
     protected function getDefaults(): array
     {
         $startTime = Carbon::create(self::faker()->datetime());
-        $artistName= ["Orelsan", "Claude François", "Johnny Halliday", "Alpha One", "Céline Dion", "Muse"];
+        $artistName= ["Orelsan", "Claude François", "Johnny Halliday", "Alpha Wann", "Céline Dion", "Muse", "Jul"];
         return [
             // TODO add your default values here (https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#model-factories)
             'name' => $artistName[array_rand($artistName)],

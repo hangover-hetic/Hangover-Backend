@@ -15,6 +15,7 @@ use App\Factory\PostFactory;
 use App\Factory\ScreenTemplateFactory;
 use App\Factory\ShowFactory;
 use App\Factory\SponsorFactory;
+use App\Factory\StyleFactory;
 use App\Factory\UserFactory;
 use App\Factory\InscriptionFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -40,8 +41,8 @@ class AppFixtures extends Fixture
 
         $userAdmin = new User();
         $userAdmin->setEmail("admin@hangover.com");
-        $userAdmin->setFirstName("Ultimate");
-        $userAdmin->setLastName("Master");
+        $userAdmin->setFirstName("Admin");
+        $userAdmin->setLastName("Hangover");
         $userAdmin->setPassword($this->hasher->hashPassword($userAdmin, "password"));
         $userAdmin->setPhone("0698784523");
         $userAdmin->setRoles(["ROLE_ADMIN"]);
@@ -61,11 +62,17 @@ class AppFixtures extends Fixture
 
         ScreenTemplateFactory::createMany(5);
 
+        StyleFactory::createMany(10);
+
         FestivalFactory::createMany(10, function () {
             return [
                 'organisationTeam' => OrganisationTeamFactory::random(),
                 "screenTemplates" => ScreenTemplateFactory::randomRange(1, 3),
-                "shows"=> ShowFactory::createMany(rand(2, 5)),
+                "shows"=> ShowFactory::createMany(rand(2, 5), function () {
+                    return [
+                        "styles" => StyleFactory::randomRange(1, 3)
+                    ];
+                }),
                 'sponsors' => SponsorFactory::createMany(rand(1, 5)),
             ];
         });

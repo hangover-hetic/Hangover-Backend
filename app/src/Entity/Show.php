@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ShowRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
@@ -41,6 +43,15 @@ class Show
     #[ORM\Column(type: 'datetime_immutable')]
     #[Groups(['item:festival:read', 'show:read', 'show:write'])]
     private $endTime;
+
+    #[ORM\ManyToMany(targetEntity: Style::class, inversedBy: 'shows')]
+    #[Groups(['item:festival:read', 'show:read', 'show:write'])]
+    private $styles;
+
+    public function __construct()
+    {
+        $this->styles = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -104,6 +115,30 @@ class Show
     public function setEndTime(\DateTimeImmutable $endTime): self
     {
         $this->endTime = $endTime;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Style>
+     */
+    public function getStyles(): Collection
+    {
+        return $this->styles;
+    }
+
+    public function addStyle(Style $style): self
+    {
+        if (!$this->styles->contains($style)) {
+            $this->styles[] = $style;
+        }
+
+        return $this;
+    }
+
+    public function removeStyle(Style $style): self
+    {
+        $this->styles->removeElement($style);
 
         return $this;
     }

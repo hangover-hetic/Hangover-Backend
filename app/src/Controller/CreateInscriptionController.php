@@ -6,11 +6,8 @@ use App\Entity\Festival;
 use App\Entity\Inscription;
 use App\Security\Roles;
 use App\Service\JwtUser;
-use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
-use Symfony\Component\Routing\Annotation\Route;
 
 class CreateInscriptionController extends AbstractController
 {

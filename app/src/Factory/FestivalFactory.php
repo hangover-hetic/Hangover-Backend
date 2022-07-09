@@ -48,6 +48,7 @@ final class FestivalFactory extends ModelFactory
             'programmation' => [],
             'map' => [],
             'location' => self::faker()->city,
+            "link" => self::faker()->url(),
         ];
     }
 

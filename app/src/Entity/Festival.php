@@ -212,6 +212,11 @@ class Festival
     #[Groups(['item:festival:read', 'admin:read', 'festival:write', 'festival:read', "screen:read"])]
     private $logo;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Assert\Url]
+    #[Groups(['item:festival:read', 'admin:read', 'festival:write', 'festival:read'])]
+    private $link;
+
 
     public function __construct()
     {
@@ -226,6 +231,7 @@ class Festival
         $this->shows = new ArrayCollection();
         $this->screens = new ArrayCollection();
         $this->sponsors = new ArrayCollection();
+        $this->tags = new ArrayCollection();
     }
 
     #[Groups(['item:festival:read', 'admin:read', 'festival:read', "screen:read"])]
@@ -607,6 +613,19 @@ class Festival
     public function setLogo(?Media $logo): self
     {
         $this->logo = $logo;
+
+        return $this;
+    }
+
+
+    public function getLink(): ?string
+    {
+        return $this->link;
+    }
+
+    public function setLink(?string $link): self
+    {
+        $this->link = $link;
 
         return $this;
     }
