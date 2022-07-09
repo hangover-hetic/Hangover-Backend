@@ -11,7 +11,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
-#[ApiResource(normalizationContext: ["groups" => ["post:read"]])]
+#[ApiResource(
+    normalizationContext: ["groups" => ["post:read"]]
+)]
 #[ORM\HasLifecycleCallbacks]
 class Post
 {

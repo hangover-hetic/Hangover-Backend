@@ -39,8 +39,9 @@ final class FestivalFactory extends ModelFactory
     protected function getDefaults(): array
     {
         $startDate = self::faker()->dateTimeBetween('now', '1 years');
+        $festivalsName = ["Hellfest", "No logo", "Les vieilles charrues", "Le cabaret vert", "Eurockéenes", "Coachella", "Burning Man"];
         return [
-            'name' => self::faker()->word(),
+            'name' => $festivalsName[array_rand($festivalsName)],
             'description' => self::faker()->text(),
             'start_date' => $startDate,
             'end_date' => Carbon::create($startDate)->addDays(rand(1, 5)),

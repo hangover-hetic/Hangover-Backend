@@ -80,7 +80,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             'deserialize' => false,
             "normalization_context" => ['groups' => ['post:read']],
             'openapi_context' => [
-                "summary" => "Upload a post and assign it to a festival",
+                "summary" => "Add a post to a festival",
                 'requestBody' => [
                     'content' => [
                         'multipart/form-data' => [
@@ -117,12 +117,12 @@ class Festival
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(["festival:read", 'item:festival:read', 'admin:read', "ot:read", "post:read", "inscription:read"])]
+    #[Groups(["festival:read", 'item:festival:read', 'admin:read', "ot:read", "post:read", "inscription:read", "screen:read"])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotNull]
-    #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write', "ot:read", "post:read", "inscription:read"])]
+    #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write', "ot:read", "post:read", "inscription:read", "screen:read"])]
     private ?string $name;
 
     #[ORM\Column(type: 'string', length: 255)]
@@ -131,11 +131,11 @@ class Festival
     private ?string $description;
 
     #[ORM\Column(type: 'datetime')]
-    #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write'])]
+    #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write', "screen:read"])]
     private ?\DateTimeInterface $startDate;
 
     #[ORM\Column(type: 'datetime')]
-    #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write'])]
+    #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write', "screen:read" ])]
     private ?\DateTimeInterface $endDate;
 
     #[ORM\Column(type: 'json')]
@@ -153,7 +153,7 @@ class Festival
     private ?array $map = [];
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write', "post:read"])]
+    #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write', "post:read", "screen:read"])]
     private ?string $location;
 
     #[ORM\ManyToOne(targetEntity: OrganisationTeam::class, inversedBy: 'festivals')]
@@ -173,7 +173,7 @@ class Festival
 
     #[ORM\ManyToMany(targetEntity: Media::class)]
     #[ApiProperty(iri: 'http://schema.org/image')]
-    #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write'])]
+    #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write', "screen:read"])]
     private $gallery;
 
     #[ORM\ManyToMany(targetEntity: ScreenTemplate::class, inversedBy: 'festivals')]
@@ -189,17 +189,28 @@ class Festival
     #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write', "inscription:read"])]
     private $cover;
 
-    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: OrganisationMessage::class, orphanRemoval: true)]
-    #[Groups(['item:festival:read', 'admin:read', 'festival:write'])]
-    private $organisationMessages;
-
     #[ORM\ManyToOne(targetEntity: Media::class)]
     #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write'])]
     private $icon;
 
-    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Singer::class, orphanRemoval: true)]
-    #[Groups(['item:festival:read', 'admin:read', 'festival:write'])]
-    private $singers;
+    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Show::class, orphanRemoval: true)]
+    #[Groups(['item:festival:read', 'admin:read', 'festival:write', 'festival:read'])]
+    #[ApiSubresource]
+    private $shows;
+
+    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Screen::class, orphanRemoval: true)]
+    #[ApiSubresource]
+    #[Groups(['festival:write'])]
+    private $screens;
+
+    #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Sponsor::class, orphanRemoval: true)]
+    #[ApiSubresource]
+    #[Groups(['item:festival:read', 'admin:read', 'festival:write', "screen:read"])]
+    private $sponsors;
+
+    #[ORM\ManyToOne(targetEntity: Media::class)]
+    #[Groups(['item:festival:read', 'admin:read', 'festival:write', 'festival:read', "screen:read"])]
+    private $logo;
 
 
     public function __construct()
@@ -212,7 +223,14 @@ class Festival
         $this->posts = new ArrayCollection();
         $this->organisationMessages = new ArrayCollection();
         $this->singersImages = new ArrayCollection();
-        $this->singers = new ArrayCollection();
+        $this->shows = new ArrayCollection();
+        $this->screens = new ArrayCollection();
+        $this->sponsors = new ArrayCollection();
+    }
+
+    #[Groups(['item:festival:read', 'admin:read', 'festival:read', "screen:read"])]
+    public function getMercureFeedTopics() {
+        return sprintf('https://hangoverapp.com/festival/%s/feed/', $this->getId());
     }
 
     public function getId(): ?int
@@ -479,36 +497,6 @@ class Festival
         return $this;
     }
 
-    /**
-     * @return Collection<int, OrganisationMessage>
-     */
-    public function getOrganisationMessages(): Collection
-    {
-        return $this->organisationMessages;
-    }
-
-    public function addOrganisationMessage(OrganisationMessage $organisationMessage): self
-    {
-        if (!$this->organisationMessages->contains($organisationMessage)) {
-            $this->organisationMessages[] = $organisationMessage;
-            $organisationMessage->setFestival($this);
-        }
-
-        return $this;
-    }
-
-    public function removeOrganisationMessage(OrganisationMessage $organisationMessage): self
-    {
-        if ($this->organisationMessages->removeElement($organisationMessage)) {
-            // set the owning side to null (unless already changed)
-            if ($organisationMessage->getFestival() === $this) {
-                $organisationMessage->setFestival(null);
-            }
-        }
-
-        return $this;
-    }
-
     public function getIcon(): ?Media
     {
         return $this->icon;
@@ -522,31 +510,103 @@ class Festival
     }
 
     /**
-     * @return Collection<int, Singer>
+     * @return Collection<int, Show>
      */
-    public function getSingers(): Collection
+    public function getShows(): Collection
     {
-        return $this->singers;
+        return $this->shows;
     }
 
-    public function addSinger(Singer $singer): self
+    public function addShow(Show $show): self
     {
-        if (!$this->singers->contains($singer)) {
-            $this->singers[] = $singer;
-            $singer->setFestival($this);
+        if (!$this->shows->contains($show)) {
+            $this->shows[] = $show;
+            $show->setFestival($this);
         }
 
         return $this;
     }
 
-    public function removeSinger(Singer $singer): self
+    public function removeShow(Show $show): self
     {
-        if ($this->singers->removeElement($singer)) {
+        if ($this->shows->removeElement($show)) {
             // set the owning side to null (unless already changed)
-            if ($singer->getFestival() === $this) {
-                $singer->setFestival(null);
+            if ($show->getFestival() === $this) {
+                $show->setFestival(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Screen>
+     */
+    public function getScreens(): Collection
+    {
+        return $this->screens;
+    }
+
+    public function addScreen(Screen $screen): self
+    {
+        if (!$this->screens->contains($screen)) {
+            $this->screens[] = $screen;
+            $screen->setFestival($this);
+        }
+
+        return $this;
+    }
+
+    public function removeScreen(Screen $screen): self
+    {
+        if ($this->screens->removeElement($screen)) {
+            // set the owning side to null (unless already changed)
+            if ($screen->getFestival() === $this) {
+                $screen->setFestival(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Sponsor>
+     */
+    public function getSponsors(): Collection
+    {
+        return $this->sponsors;
+    }
+
+    public function addSponsor(Sponsor $sponsor): self
+    {
+        if (!$this->sponsors->contains($sponsor)) {
+            $this->sponsors[] = $sponsor;
+            $sponsor->setFestival($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSponsor(Sponsor $sponsor): self
+    {
+        if ($this->sponsors->removeElement($sponsor)) {
+            // set the owning side to null (unless already changed)
+            if ($sponsor->getFestival() === $this) {
+                $sponsor->setFestival(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getLogo(): ?Media
+    {
+        return $this->logo;
+    }
+
+    public function setLogo(?Media $logo): self
+    {
+        $this->logo = $logo;
 
         return $this;
     }

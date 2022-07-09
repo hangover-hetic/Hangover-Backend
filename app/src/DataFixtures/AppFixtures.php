@@ -13,6 +13,8 @@ use App\Factory\OrganisatorFactory;
 use App\Factory\PackageFactory;
 use App\Factory\PostFactory;
 use App\Factory\ScreenTemplateFactory;
+use App\Factory\ShowFactory;
+use App\Factory\SponsorFactory;
 use App\Factory\UserFactory;
 use App\Factory\InscriptionFactory;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -63,6 +65,8 @@ class AppFixtures extends Fixture
             return [
                 'organisationTeam' => OrganisationTeamFactory::random(),
                 "screenTemplates" => ScreenTemplateFactory::randomRange(1, 3),
+                "shows"=> ShowFactory::createMany(rand(2, 5)),
+                'sponsors' => SponsorFactory::createMany(rand(1, 5)),
             ];
         });
 

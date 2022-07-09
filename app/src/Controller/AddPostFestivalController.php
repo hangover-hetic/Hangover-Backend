@@ -45,7 +45,7 @@ class AddPostFestivalController extends AbstractController
         $entityManager->flush();
 
         $update = new Update(
-            sprintf('https://hangoverapp.com/festival/%s/feed/', $festival->getId()),
+            $festival->getMercureFeedTopics(),
             $serializer->serialize($post, 'json')
         );
 

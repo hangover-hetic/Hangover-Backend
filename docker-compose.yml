@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   php:
+    restart: always
     container_name: php
     build:
       context: ./php
@@ -13,6 +14,7 @@ services:
       - database
 
   nginx:
+    restart: always
     container_name: nginx
     image: nginx:stable-alpine
     ports:
@@ -25,6 +27,7 @@ services:
       - database
 
   database:
+    restart: always
     container_name: database
     image: 'postgres:13-alpine'
     environment:
@@ -49,7 +52,7 @@ services:
 
   caddy:
     image: dunglas/mercure
-    restart: unless-stopped
+    restart: always
     environment:
       # Uncomment the following line to disable HTTPS
       SERVER_NAME: ':80'

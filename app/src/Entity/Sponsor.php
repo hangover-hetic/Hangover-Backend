@@ -3,35 +3,30 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\SingerRepository;
+use App\Repository\SponsorRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 
-#[ORM\Entity(repositoryClass: SingerRepository::class)]
-#[ApiResource(
-    denormalizationContext: ['groups' => ['singer:write']],
-    normalizationContext: ["groups" => ["singer:read"]]
-)]
-class Singer
+#[ORM\Entity(repositoryClass: SponsorRepository::class)]
+#[ApiResource]
+class Sponsor
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['item:festival:read', 'singer:read'])]
+    #[Groups(['item:festival:read', "screen:read"])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['item:festival:read', 'singer:read', 'singer:write'])]
+    #[Groups(['item:festival:read', "screen:read"])]
     private $name;
 
     #[ORM\ManyToOne(targetEntity: Media::class)]
-    #[ORM\JoinColumn(nullable:true)]
-    #[Groups(['item:festival:read', 'singer:read', 'singer:write'])]
-    private $image;
+    #[Groups(['item:festival:read', "screen:read"])]
+    private $logo;
 
-    #[ORM\ManyToOne(targetEntity: Festival::class, inversedBy: 'singers')]
-    #[ORM\JoinColumn(nullable: false)]
-    #[Groups(['singer:read', 'singer:write'])]
+    #[ORM\ManyToOne(targetEntity: Festival::class, inversedBy: 'sponsors')]
+    #[ORM\JoinColumn(nullable: true)]
     private $festival;
 
     public function getId(): ?int
@@ -51,15 +46,14 @@ class Singer
         return $this;
     }
 
-
-    public function getImage(): ?Media
+    public function getLogo(): ?Media
     {
-        return $this->image;
+        return $this->logo;
     }
 
-    public function setImage(?Media $image): self
+    public function setLogo(?Media $logo): self
     {
-        $this->image = $image;
+        $this->logo = $logo;
 
         return $this;
     }
