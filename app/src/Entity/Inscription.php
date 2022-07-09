@@ -4,8 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Bridge\Doctrine\MongoDbOdm\Filter\SearchFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
+use App\Controller\CreateInscriptionController;
 use App\Controller\GetFriendsInscriptionsController;
 use App\Repository\InscriptionRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -27,8 +27,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             "security_message" => "You must be administrator."
         ],
         "post" => [
-            "security" => "is_granted('INSCRIPTION_EDIT')",
-            "security_message" => "You must be administrator."
+            "controller" => CreateInscriptionController::class
         ],
         "get_inscriptions_friends" => [
             "method"=>"GET",
@@ -38,18 +37,18 @@ use Symfony\Component\Validator\Constraints as Assert;
     ],
     itemOperations: [
         "get" => [
-            "security" => "is_granted('INSCRIPTION_VIEW')",
-            "security_message" => "You must be administrator.",
+            "security" => "is_granted('INSCRIPTION_EDIT', object)",
+            "security_message" => "You must be the correct user or administrator.",
             "normalization_context" => ["groups" => ["item:inscription:read"]]
         ],
 
         "put" => [
-            "security" => "is_granted('INSCRIPTION_EDIT')",
-            "security_message" => "You must be administrator."
+            "security" => "is_granted('INSCRIPTION_EDIT', object)",
+            "security_message" => "You must be the correct user or administrator."
         ],
         "delete" => [
-            "security" => "is_granted('INSCRIPTION_EDIT')",
-            "security_message" => "You must be administrator."
+            "security" => "is_granted('INSCRIPTION_EDIT', object)",
+            "security_message" => "You must be the correct user or administrator."
         ]
     ],
     normalizationContext: ["groups" => ["inscription:read"]]
@@ -63,7 +62,7 @@ class Inscription
     #[Groups(["inscription:read", "item:inscription:read"])]
     private int $id;
 
-    #[ORM\Column(type: 'string', length: 255)]
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
     #[Assert\Url]
     #[Groups(["item:inscription:read"])]
     private $ticketPath;

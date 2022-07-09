@@ -23,7 +23,6 @@ class InscriptionVoter extends Voter
 
     protected function supports(string $attribute, $subject): bool
     {
-        // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
         return in_array($attribute, [self::EDIT, self::VIEW])
             && $subject instanceof \App\Entity\Inscription;
@@ -36,7 +35,6 @@ class InscriptionVoter extends Voter
         if (!$user instanceof User) {
             return false;
         }
-
         return match ($attribute) {
             self::EDIT, self::VIEW => $this->security->isGranted(Roles::$ADMIN) || $subject->getRelatedUser()->getId() === $user->getId(),
             default => false,
