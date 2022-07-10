@@ -34,31 +34,33 @@ use Symfony\Component\Validator\Constraints as Assert;
             "security" => "is_granted('ROLE_ADMIN')",
             "security_message" => "You must be administrator."
         ]
-    ]
+    ],
+    normalizationContext: ["groups" => ["licence:read"]]
 )]
 class Licence
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(["ot:read"])]
+    #[Groups(["ot:read", "licence:read"])]
     private ?int $id;
 
     #[ORM\Column(type: 'date')]
     #[Assert\NotBlank]
-    #[Groups(["ot:read"])]
+    #[Groups(["ot:read", "licence:read"])]
     private ?\DateTimeInterface $startDate;
 
     #[ORM\Column(type: 'date')]
     #[Assert\NotBlank]
-    #[Groups(["ot:read"])]
+    #[Groups(["ot:read", "licence:read"])]
     private ?\DateTimeInterface $endDate;
 
     #[ORM\Column(type: 'boolean')]
-    #[Groups(["ot:read"])]
+    #[Groups(["ot:read", "licence:read"])]
     private ?bool $isBuyed = false;
 
     #[ORM\OneToOne(inversedBy: 'licence', targetEntity: OrganisationTeam::class, cascade: ['persist', 'remove'])]
+    #[Groups(["licence:read"])]
     private $organisationTeam;
 
     public function getId(): ?int

@@ -51,12 +51,12 @@ class OrganisationTeam
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(["ot:read"])]
+    #[Groups(["ot:read", "licence:read"])]
     private int $id;
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\Length(min: 5)]
-    #[Groups(["ot:read"])]
+    #[Groups(["ot:read", "licence:read"])]
     private ?string $name;
 
     #[ORM\OneToOne(mappedBy: 'organisationTeam', targetEntity: Licence::class, cascade: ['persist', 'remove'])]

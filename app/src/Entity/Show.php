@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiSubresource;
 use App\Repository\ShowRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -46,6 +47,7 @@ class Show
 
     #[ORM\ManyToMany(targetEntity: Style::class, inversedBy: 'shows')]
     #[Groups(['item:festival:read', 'show:read', 'show:write'])]
+    #[ApiSubresource]
     private $styles;
 
     public function __construct()

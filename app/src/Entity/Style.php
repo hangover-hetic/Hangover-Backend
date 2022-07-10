@@ -37,12 +37,12 @@ class Style
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(["tag:read", 'show:read'])]
+    #[Groups(["tag:read", 'show:read', 'item:festival:read'])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
     #[Assert\NotBlank]
-    #[Groups(["tag:read", 'show:read'])]
+    #[Groups(["tag:read", 'show:read', 'item:festival:read'])]
     private $label;
 
     #[ORM\ManyToMany(targetEntity: Show::class, mappedBy: 'styles')]
