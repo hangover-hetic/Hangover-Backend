@@ -138,10 +138,6 @@ class Festival
     #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write', "screen:read" ])]
     private ?\DateTimeInterface $endDate;
 
-    #[ORM\Column(type: 'json')]
-    #[Groups(['item:festival:read', 'admin:read', 'festival:write'])]
-    private ?array $programmation = [];
-
     #[ORM\Column(type: 'string', length: 20, nullable: true)]
     #[Assert\Choice(choices: Festival::STATUS, message: 'Choose a valid status : DRAFT, PUBLISHED, VALIDATED')]
     #[Groups(["festival:read", 'festival:write', 'item:festival:read'])]
@@ -188,10 +184,6 @@ class Festival
     #[ORM\ManyToOne(targetEntity: Media::class)]
     #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write', "inscription:read"])]
     private $cover;
-
-    #[ORM\ManyToOne(targetEntity: Media::class)]
-    #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write'])]
-    private $icon;
 
     #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Show::class, orphanRemoval: true)]
     #[Groups(['item:festival:read', 'admin:read', 'festival:write', 'festival:read'])]
@@ -292,17 +284,6 @@ class Festival
         return $this;
     }
 
-    public function getProgrammation(): ?array
-    {
-        return $this->programmation;
-    }
-
-    public function setProgrammation(array $programmation): self
-    {
-        $this->programmation = $programmation;
-
-        return $this;
-    }
 
     public function getStatus(): ?string
     {
@@ -503,17 +484,6 @@ class Festival
         return $this;
     }
 
-    public function getIcon(): ?Media
-    {
-        return $this->icon;
-    }
-
-    public function setIcon(?Media $icon): self
-    {
-        $this->icon = $icon;
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, Show>
