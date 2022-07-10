@@ -45,7 +45,6 @@ final class FestivalFactory extends ModelFactory
             'description' => self::faker()->text(),
             'start_date' => $startDate,
             'end_date' => Carbon::create($startDate)->addDays(rand(1, 5)),
-            'programmation' => [],
             'map' => [],
             'location' => self::faker()->city,
             "link" => self::faker()->url(),
