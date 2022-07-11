@@ -40,7 +40,8 @@ class AddPostFestivalController extends AbstractController
         $post = new Post();
         $post->setMedia($media);
         $post->setRelatedUser($user);
-        $post->setMessage($request->get("message"));
+        $message = $request->get("message");
+        if($message) $post->setMessage($message);
         $post->setFestival($festival);
         $post->setStatus(Post::STATUS_TO_MODERATE);
 
