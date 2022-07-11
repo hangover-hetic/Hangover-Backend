@@ -9,6 +9,7 @@ use App\Controller\AddMediaFestivalController;
 use App\Controller\AddPostFestivalController;
 use App\Controller\CreateFestivalController;
 use App\Controller\GetFestivalsAdminController;
+use App\Controller\GetPostToModerateController;
 use App\Repository\FestivalRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -46,6 +47,14 @@ use Symfony\Component\Validator\Constraints as Assert;
         "delete" => [
             "security" => "is_granted('FESTIVAL_ADMIN', object)",
             "security_message" => "You must be on the festival organisation team or admin."
+        ],
+        "get_post_to_moderate" => [
+            "normalization_context" => ['groups' => ['post:read']],
+            "method" => "GET",
+            "path"=> "/festivals/{id}/posts/moderation",
+            "security" => "is_granted('FESTIVAL_ADMIN', object)",
+            "security_message" => "You must be on the festival organisation team or admin.",
+            "controller"=> GetPostToModerateController::class
         ],
         "add_media" => [
             "method" => "PUT",

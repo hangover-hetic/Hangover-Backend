@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Festival;
 use App\Entity\Post;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -47,4 +48,17 @@ class PostRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function findToModerateByFestival(Festival $festival)
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.festival = :festival')
+            ->andWhere('p.status = :status')
+            ->setParameter('festival', $festival)
+            ->setParameter('status', Post::STATUS_TO_MODERATE)
+            ->orderBy('p.createdAt', 'DESC')
+            ->setMaxResults(200)
+            ->getQuery()
+            ->getResult();
+    }
 }

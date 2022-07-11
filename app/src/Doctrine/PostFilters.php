@@ -25,6 +25,8 @@ final class PostFilters implements QueryCollectionExtensionInterface, QueryItemE
             return;
         }
         $rootAlias = $queryBuilder->getRootAliases()[0];
+        $queryBuilder->andWhere(sprintf('%s.status = :status', $rootAlias));
+        $queryBuilder->setParameter('status', Post::STATUS_PUBLISHED);
         $queryBuilder->orderBy(sprintf('%s.createdAt', $rootAlias), 'DESC');
         $queryBuilder->setMaxResults(20);
     }
