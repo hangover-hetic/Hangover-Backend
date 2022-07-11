@@ -2,21 +2,37 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiProperty;
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\PublishPostController;
 use App\Repository\PostRepository;
 use Carbon\Carbon;
 use Doctrine\ORM\Mapping as ORM;
 
 use Symfony\Component\Serializer\Annotation\Groups;
-use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PostRepository::class)]
 #[ApiResource(
+    itemOperations: [
+        "get",
+        "put" => [
+            "method" => "PUT",
+            "path" => "/posts/{id}/publish",
+            "controller"=> PublishPostController::class,
+            "denormalize" => false,
+            "normalization_context" => ["groups" => ["post:read"]]
+        ],
+        "delete"
+    ],
     normalizationContext: ["groups" => ["post:read"]]
 )]
 #[ORM\HasLifecycleCallbacks]
 class Post
 {
+
+    const STATUS_TO_MODERATE = "TO_MODERATE";
+    const STATUS_PUBLISHED = "PUBLISHED";
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
@@ -42,6 +58,10 @@ class Post
     #[ORM\Column(type: 'datetime_immutable')]
     #[Groups(["post:read"])]
     private $createdAt;
+
+    #[ORM\Column(type: 'string', length: 255)]
+    #[Groups(["post:read", "post:write"])]
+    private $status = self::STATUS_TO_MODERATE;
 
     #[ORM\PrePersist]
     public function updatedTimestamps(): void
@@ -102,6 +122,18 @@ class Post
     public function setCreatedAt(\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }

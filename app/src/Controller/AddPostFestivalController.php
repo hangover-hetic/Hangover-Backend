@@ -41,11 +41,13 @@ class AddPostFestivalController extends AbstractController
         $post->setMedia($media);
         $post->setRelatedUser($user);
         $post->setFestival($festival);
+        $post->setStatus(Post::STATUS_TO_MODERATE);
+
         $entityManager->persist($post);
         $entityManager->flush();
 
         $update = new Update(
-            $festival->getMercureFeedTopics(),
+            $festival->getMercureModerationTopics(),
             $serializer->serialize($post, 'json')
         );
 

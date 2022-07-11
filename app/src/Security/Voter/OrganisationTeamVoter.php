@@ -2,6 +2,8 @@
 
 namespace App\Security\Voter;
 
+use App\Entity\OrganisationTeam;
+use App\Entity\Organisator;
 use App\Entity\User;
 use App\Security\Roles;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
@@ -26,7 +28,7 @@ class OrganisationTeamVoter extends Voter
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
         return in_array($attribute, [self::EDIT, self::VIEW, self::DELETE])
-            && $subject instanceof \App\Entity\OrganisationTeam;
+            && ($subject instanceof OrganisationTeam || $subject instanceof Organisator);
     }
 
     protected function voteOnAttribute(string $attribute, $subject, TokenInterface $token): bool
@@ -36,6 +38,10 @@ class OrganisationTeamVoter extends Voter
         if (!$user instanceof User) {
             return false;
         }
-        return in_array($subject, $user->getOrganisationTeams()) || $this->security->isGranted(Roles::$ADMIN);
+        if ($this->security->isGranted(Roles::$ADMIN)) return true;
+        if ($subject instanceof OrganisationTeam) return in_array($subject, $user->getOrganisationTeams());
+        if ($subject instanceof Organisator) return in_array($subject->getOrganisationTeam(), $user->getOrganisationTeams());
+
+        return false;
     }
 }

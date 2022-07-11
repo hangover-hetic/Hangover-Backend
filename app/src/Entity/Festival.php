@@ -231,6 +231,11 @@ class Festival
         return sprintf('https://hangoverapp.com/festival/%s/feed/', $this->getId());
     }
 
+    #[Groups(['item:festival:read'])]
+    public function getMercureModerationTopics() {
+        return sprintf('https://hangoverapp.com/festival/%s/moderation/', $this->getId());
+    }
+
     public function getId(): ?int
     {
         return $this->id;

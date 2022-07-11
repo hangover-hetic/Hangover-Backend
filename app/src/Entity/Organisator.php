@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use App\Controller\CreateOrganisatorController;
 use App\Repository\OrganisatorRepository;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -12,11 +13,24 @@ use Symfony\Component\Validator\Constraints as Assert;
 #[ORM\Entity(repositoryClass: OrganisatorRepository::class)]
 #[ApiResource(
     collectionOperations: [
-        "get",
-        "post",
+        "post" => [
+            "controller" => CreateOrganisatorController::class,
+            "denormalization_context" => ["groups" => "organisator:create"]
+        ],
     ],
-    denormalizationContext: ["groups" => "organisator:write"],
-    normalizationContext: ["groups" => "organisator:read"],
+    itemOperations: [
+        "get" => [
+            "security" => "is_granted('OT_VIEW', object)",
+        ],
+        "put" => [
+            "security" => "is_granted('OT_EDIT', object)",
+            "denormalization_context" => ["groups" => "organisator:edit"]
+        ],
+        "delete" => [
+            "security" => "is_granted('OT_EDIT', object)",
+        ]
+    ],
+    normalizationContext: ["groups" => "organisator:read"]
 )]
 class Organisator
 {
@@ -27,16 +41,16 @@ class Organisator
     private int $id;
 
     #[ORM\Column(type: 'boolean')]
-    #[Groups(["organisator:read", "organisator:write", "ot:read"])]
+    #[Groups(["organisator:read", "organisator:create", "ot:read", "organisator:edit"])]
     private bool $isAdministrator;
 
     #[ORM\ManyToOne(targetEntity: OrganisationTeam::class, inversedBy: 'organisators')]
-    #[Groups(["organisator:read", "organisator:write"])]
+    #[Groups(["organisator:read", "organisator:create"])]
     #[ORM\JoinColumn(nullable: true)]
     private $organisationTeam;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'organisators')]
-    #[Groups(["organisator:read", "organisator:write", "ot:read"])]
+    #[Groups(["organisator:read", "organisator:create", "ot:read"])]
     #[ORM\JoinColumn(nullable: true)]
     private $relatedUser;
 
