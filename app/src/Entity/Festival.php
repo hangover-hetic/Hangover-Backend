@@ -149,7 +149,7 @@ class Festival
     private ?array $map = [];
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write', "post:read", "screen:read"])]
+    #[Groups(["festival:read", 'item:festival:read', 'admin:read', 'festival:write', "post:read", "screen:read", "inscription:read"])]
     private ?string $location;
 
     #[ORM\ManyToOne(targetEntity: OrganisationTeam::class, inversedBy: 'festivals')]
