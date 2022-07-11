@@ -63,6 +63,10 @@ class Post
     #[Groups(["post:read", "post:write"])]
     private $status = self::STATUS_TO_MODERATE;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(["post:read","post:write"])]
+    private $message;
+
     #[ORM\PrePersist]
     public function updatedTimestamps(): void
     {
@@ -134,6 +138,18 @@ class Post
     public function setStatus(string $status): self
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getMessage(): ?string
+    {
+        return $this->message;
+    }
+
+    public function setMessage(string $message): self
+    {
+        $this->message = $message;
 
         return $this;
     }
