@@ -13,6 +13,6 @@ class FriendshipController extends AbstractController
     {
         $user = $userRepository->findOneById($userId);
         if (!$user) throw new NotFoundHttpException("User $userId not exist");
-        return $frienshipUtils->getUserFriends($user);
+        return $frienshipUtils->getUserFriendsAsObject($user);
     }
 }

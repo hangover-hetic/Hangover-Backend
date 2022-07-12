@@ -59,6 +59,6 @@ class JwtMercure
     {
         return array_map(function (User $friend) {
             return $this->getUrlFromUser($friend);
-        }, $this->frienshipUtils->getUserFriends($user));
+        }, $this->frienshipUtils->getUserValidatedFriendsAsUsers($user));
     }
 }

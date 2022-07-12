@@ -45,9 +45,21 @@ class FriendshipRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('f')
             ->andWhere('f.relatedUser = :val')
             ->orWhere('f.friend = :val')
+            ->andWhere('f.validated = true')
             ->setParameter('val', $user)
             ->orderBy('f.id', 'ASC')
             ->setMaxResults(100)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findByUser(User $user): array
+    {
+        return $this->createQueryBuilder('f')
+            ->andWhere('f.relatedUser = :val')
+            ->orWhere('f.friend = :val')
+            ->setParameter('val', $user)
+            ->orderBy('f.id', 'ASC')
             ->getQuery()
             ->getResult();
     }
