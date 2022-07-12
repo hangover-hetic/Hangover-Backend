@@ -24,7 +24,7 @@ class PublishPostController extends AbstractController
         $post->setStatus(Post::STATUS_PUBLISHED);
         $entityManager->flush();
         $update = new Update(
-            $post->getFestival()->getMercureModerationTopics(),
+            $post->getFestival()->getMercureFeedTopics(),
             $serializer->serialize($post, 'json')
         );
         $hub->publish($update);
