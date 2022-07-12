@@ -78,11 +78,11 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
 class Media
 {
     #[ORM\Id, ORM\Column, ORM\GeneratedValue]
-    #[Groups(['media_object:read', 'media_object_collection_read', "festival:read",'show:read', 'item:festival:read', "post:read", "screen:read", "user:read", "item:user:read"])]
+    #[Groups(['media_object:read', 'media_object_collection_read', "festival:read",'show:read', 'item:festival:read', "post:read", "screen:read", "user:read", "item:user:read", "feed:post:read"])]
     private ?int $id = null;
 
     #[ApiProperty(iri: 'http://schema.org/contentUrl')]
-    #[Groups(['media_object:read', 'media_object_collection_read', "festival:read",'show:read', 'item:festival:read',"post:read", "screen:read", "user:read", "item:user:read", "inscription:read"])]
+    #[Groups(['media_object:read', 'media_object_collection_read', "festival:read",'show:read', 'item:festival:read',"post:read", "screen:read", "user:read", "item:user:read", "inscription:read", "feed:post:read"])]
     public ?string $contentUrl = null;
 
     /**

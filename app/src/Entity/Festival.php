@@ -87,7 +87,7 @@ use Symfony\Component\Validator\Constraints as Assert;
             'requirements' => ['id' => '\d+'],
             'controller' => AddPostFestivalController::class,
             'deserialize' => false,
-            "normalization_context" => ['groups' => ['post:read']],
+            "normalization_context" => ['groups' => ['feed:post:read']],
             'openapi_context' => [
                 "summary" => "Add a post to a festival",
                 'requestBody' => [

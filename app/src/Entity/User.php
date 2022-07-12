@@ -69,15 +69,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(["friendship:read", "user:read", "collection:user:read", "item:user:read", "post:read", "ot:read", "inscription:read"])]
+    #[Groups(["friendship:read", "feed:post:read","user:read", "collection:user:read", "item:user:read", "post:read", "ot:read", "inscription:read"])]
     private int $id;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["friendship:read", "user:read", "collection:user:read", "item:user:read", "user:write", "post:read", "ot:read", "inscription:read"])]
+    #[Groups(["friendship:read", "feed:post:read", "user:read", "collection:user:read", "item:user:read", "user:write", "post:read", "ot:read", "inscription:read"])]
     private string $firstName;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["friendship:read", "user:read", "collection:user:read", "item:user:read", "user:write", "post:read", "ot:read", "inscription:read"])]
+    #[Groups(["friendship:read","feed:post:read", "user:read", "collection:user:read", "item:user:read", "user:write", "post:read", "ot:read", "inscription:read"])]
     private string $lastName;
 
     #[ORM\Column(type: 'string', length: 255, unique: true)]

@@ -20,7 +20,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
             "path" => "/posts/{id}/publish",
             "controller"=> PublishPostController::class,
             "denormalize" => false,
-            "normalization_context" => ["groups" => ["post:read"]]
+            "normalization_context" => ["groups" => ["feed:post:read"]]
         ],
         "delete"
     ],
@@ -36,7 +36,7 @@ class Post
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(["post:read"])]
+    #[Groups(["post:read", "feed:post:read"])]
     private int $id;
 
 
@@ -47,24 +47,24 @@ class Post
 
     #[ORM\ManyToOne(targetEntity: Media::class)]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(["post:read"])]
+    #[Groups(["post:read", "feed:post:read"])]
     private $media;
 
     #[ORM\ManyToOne(targetEntity: User::class, inversedBy: 'posts')]
     #[ORM\JoinColumn(nullable: false)]
-    #[Groups(["post:read"])]
+    #[Groups(["post:read", "feed:post:read"])]
     private $relatedUser;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    #[Groups(["post:read"])]
+    #[Groups(["post:read", "feed:post:read"])]
     private $createdAt;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(["post:read", "post:write"])]
+    #[Groups(["post:read", "post:write", "feed:post:read"])]
     private $status = self::STATUS_TO_MODERATE;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Groups(["post:read","post:write"])]
+    #[Groups(["post:read","post:write", "feed:post:read"])]
     private $message;
 
     #[ORM\PrePersist]
