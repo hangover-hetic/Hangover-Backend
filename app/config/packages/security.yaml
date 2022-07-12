@@ -37,7 +37,6 @@ security:
   access_control:
     - { path: ^/api/authentication_token, roles: PUBLIC_ACCESS }
     - { path: ^/api/users, roles: PUBLIC_ACCESS, methods: [ "POST" ] }
-    - { path: ^/api/screens, roles: PUBLIC_ACCESS, methods: [ "GET" ] }
     - { path: ^/api, roles: IS_AUTHENTICATED_FULLY }
 
 

@@ -6,6 +6,8 @@ use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Controller\CreateScreenController;
+use App\Controller\FriendshipController;
+use App\Controller\ScreenController;
 use App\Repository\ScreenRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -15,11 +17,18 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ORM\HasLifecycleCallbacks]
 #[ApiResource(
     collectionOperations: [
-        "get" => [],
         "post" => [
             "denormalization_context" => ["groups" => ["screen:write"]],
             'controller' => CreateScreenController::class,
-        ]
+        ],
+//        "get_screen_by_token" => [
+//            "normalization_context" => ['groups' => ['screen:read']],
+//            "method" => "GET",
+//            "path"=> "/screens/token/{screenToken}",
+//            'deserialize' => false,
+//            'requirements' => ['screenToken' => '\*+'],
+//            "controller"=> GetScreenController::class
+//        ],
     ],
     itemOperations: [
         "get",
@@ -27,7 +36,6 @@ use Symfony\Component\Serializer\Annotation\Groups;
     ],
     normalizationContext: ["groups" => ["screen:read"]]
 )]
-#[ApiFilter(SearchFilter::class, properties: ["token" =>  "exact"])]
 #[UniqueEntity("token")]
 class Screen
 {

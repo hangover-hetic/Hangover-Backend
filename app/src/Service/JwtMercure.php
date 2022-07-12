@@ -3,6 +3,7 @@ namespace App\Service;
 use App\Entity\Festival;
 use App\Entity\User;
 use App\Repository\FestivalRepository;
+use App\Security\Roles;
 use Firebase\JWT\JWT;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
@@ -17,7 +18,7 @@ class JwtMercure
         string              $mercureSecret,
         NormalizerInterface $normalizer,
         FrienshipUtils      $frienshipUtils,
-        FestivalRepository $festivalRepository,
+        FestivalRepository $festivalRepository
     )
     {
         $this->mercureSecret = $mercureSecret;
@@ -25,10 +26,23 @@ class JwtMercure
         $this->frienshipUtils = $frienshipUtils;
         $this->festivalRepository = $festivalRepository;
     }
+    public function getScreenJwt(Festival $festival) {
+        return JWT::encode(
+            [
+                "mercure" => [
+                    "publish" => [],
+                    "subscribe" => [$festival->getMercureFeedTopics()],
+                    "payload" => []
+                ]
+            ],
+            $this->mercureSecret,
+            'HS256');
+    }
 
     public function createJwt(User $actualUser): string
     {
         $actualUserUrl = $this->getUrlFromUser($actualUser);
+
         $subscribeTopics = $this->getFriendsUrlFromUser($actualUser);
         $subscribeTopics[] = $actualUserUrl;
         if(count($actualUser->getOrganisationTeams()) > 0) {
@@ -36,10 +50,18 @@ class JwtMercure
                 return $festival->getMercureModerationTopics();
             }, $this->festivalRepository->findByUserOrganisator($actualUser)));
         }
+
+        $publishTopics = [$actualUserUrl];
+
+        if(in_array(Roles::$ADMIN, $actualUser->getRoles())) {
+            $subscribeTopics = ["*"];
+            $publishTopics = ["*"];
+        }
+
         return JWT::encode(
             [
                 "mercure" => [
-                    "publish" => [$actualUserUrl],
+                    "publish" => $publishTopics,
                     "subscribe" => $subscribeTopics,
                     "payload" => [
                         "user" => $this->normalizer->normalize($actualUser)

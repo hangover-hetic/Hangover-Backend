@@ -61,4 +61,17 @@ class InscriptionRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    public function findByDate()
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.startDate > :today')
+            ->andWhere('u.endDate < :today')
+            ->setParameter('today', new \DateTime())
+            ->orderBy('u.startDate', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
 }

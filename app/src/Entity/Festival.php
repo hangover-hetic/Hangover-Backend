@@ -195,7 +195,7 @@ class Festival
     private $cover;
 
     #[ORM\OneToMany(mappedBy: 'festival', targetEntity: Show::class, orphanRemoval: true)]
-    #[Groups(['item:festival:read', 'admin:read', 'festival:write', 'festival:read'])]
+    #[Groups(['item:festival:read', 'admin:read', 'festival:write', 'festival:read', "screen:read"])]
     #[ApiSubresource]
     private $shows;
 

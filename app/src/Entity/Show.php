@@ -20,16 +20,16 @@ class Show
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    #[Groups(['item:festival:read', 'show:read'])]
+    #[Groups(['item:festival:read', 'show:read', "screen:read"])]
     private $id;
 
     #[ORM\Column(type: 'string', length: 255)]
-    #[Groups(['item:festival:read', 'show:read', 'show:write'])]
+    #[Groups(['item:festival:read', 'show:read', 'show:write', "screen:read"])]
     private $name;
 
     #[ORM\ManyToOne(targetEntity: Media::class)]
     #[ORM\JoinColumn(nullable: true)]
-    #[Groups(['item:festival:read', 'show:read', 'show:write'])]
+    #[Groups(['item:festival:read', 'show:read', 'show:write', "screen:read"])]
     private $image;
 
     #[ORM\ManyToOne(targetEntity: Festival::class, inversedBy: 'shows')]
@@ -38,15 +38,15 @@ class Show
     private $festival;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    #[Groups(['item:festival:read', 'show:read', 'show:write'])]
+    #[Groups(['item:festival:read', 'show:read', 'show:write', "screen:read"])]
     private $startTime;
 
     #[ORM\Column(type: 'datetime_immutable')]
-    #[Groups(['item:festival:read', 'show:read', 'show:write'])]
+    #[Groups(['item:festival:read', 'show:read', 'show:write',"screen:read"])]
     private $endTime;
 
     #[ORM\ManyToMany(targetEntity: Style::class, inversedBy: 'shows')]
-    #[Groups(['item:festival:read', 'show:read', 'show:write'])]
+    #[Groups(['item:festival:read', 'show:read', 'show:write',"screen:read"])]
     #[ApiSubresource]
     private $styles;
 
