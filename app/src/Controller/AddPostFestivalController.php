@@ -50,8 +50,7 @@ class AddPostFestivalController extends AbstractController
 
         $update = new Update(
             $festival->getMercureModerationTopics(),
-            $serializer->serialize($post, 'json'),
-            true
+            $serializer->serialize($post, 'json')
         );
 
         $hub->publish($update);
