@@ -27,8 +27,8 @@ class FrienshipUtils
     {
         return array_map(function (Friendship $friendship) use ($user) {
             $result = [];
-            $result["isInvited"] = $user->getId() !== $friendship->getRelatedUser()->getId();
-            $result["user"] = $result["isInvited"] ? $friendship->getRelatedUser() : $friendship->getFriend();
+            $result["isInvited"] = $user->getId() === $friendship->getRelatedUser()->getId();
+            $result["user"] = $result["isInvited"] ? $friendship->getFriend() : $friendship->getRelatedUser() ;
             $result["friendshipId"] = $friendship->getId();
             $result["validated"] = $friendship->isValidated();
             return $result;
