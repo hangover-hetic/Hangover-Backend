@@ -90,7 +90,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private string $password;
 
     #[ORM\Column(type: 'string', length: 255, nullable: true)]
-    #[Assert\Regex('/^(?:0|\s?)[1-79](?:[\.\-\s]?\d\d){4}$/')]
     #[Groups(["user:read", "item:user:read", "user:write", "collection:user:read"])]
     private string $phone;
 
