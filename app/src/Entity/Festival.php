@@ -218,6 +218,11 @@ class Festival
     #[Groups(['item:festival:read', 'admin:read', 'festival:write', 'festival:read'])]
     private $link;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    #[Groups(['item:festival:read', 'admin:read', 'festival:write', "screen:read" ])]
+    private $screenColor;
+
+
 
     public function __construct()
     {
@@ -610,6 +615,18 @@ class Festival
     public function setLink(?string $link): self
     {
         $this->link = $link;
+
+        return $this;
+    }
+
+    public function getScreenColor(): ?string
+    {
+        return $this->screenColor;
+    }
+
+    public function setScreenColor(string $screenColor): self
+    {
+        $this->screenColor = $screenColor;
 
         return $this;
     }
