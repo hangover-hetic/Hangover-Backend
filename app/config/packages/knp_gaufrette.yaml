@@ -1,0 +1,11 @@
+knp_gaufrette:
+  stream_wrapper: ~
+
+  adapters:
+    medias_adapters:
+      local:
+        directory: '%kernel.project_dir%/public/media/festivals'
+
+  filesystems:
+    medias_fs:
+      adapter: medias_adapters

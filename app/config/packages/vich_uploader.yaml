@@ -1,0 +1,8 @@
+vich_uploader:
+  db_driver: orm
+  storage: gaufrette
+  mappings:
+    media_object:
+      uri_prefix: /media/festivals
+      upload_destination: medias_fs
+      namer: Vich\UploaderBundle\Naming\OrignameNamer
